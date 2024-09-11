@@ -67,7 +67,15 @@ concept Elimination = requires (T t, elimination_variant variant, board &b) {
 };
 
 struct elimination {
-    explicit elimination(Elimination auto &&variant)  noexcept : variant(variant) {}
+    template <Elimination E>
+    requires (!std::same_as<std::remove_cvref_t<E>, elimination>) // Hack because elimination actually satisfies Elimination?
+    explicit elimination(E &&variant) : variant(std::forward<E>(variant)) {}
+    elimination(const elimination &other) = default;
+    elimination(elimination &&other) noexcept = default;
+    elimination &operator=(const elimination &other) = default;
+    elimination &operator=(elimination &&other) noexcept = default;
+    ~elimination() = default;
+
     [[nodiscard]] std::string to_string() const {
         return std::visit([](const auto &result) { return result.to_string(); }, variant);
     }
@@ -76,11 +84,15 @@ struct elimination {
         std::visit([&b](const auto &result) { result.apply(b); }, variant);
     }
 
-    template <Elimination T>
-    operator T const &() const { // NOLINT(*-explicit-constructor)
-        return std::get<T>(variant);
+    template <Elimination E>
+    const E &get() const {
+        return std::get<E>(variant);
     }
 
+    template <Elimination E>
+    E &get() {
+        return std::get<E>(variant);
+    }
 private:
     elimination_variant variant;
 };

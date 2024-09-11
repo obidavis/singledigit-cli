@@ -13,4 +13,18 @@
 
 using strategy_fn = std::vector<elimination> (*)(const board&);
 
+static const std::vector all_strategies = {
+        basic,
+        naked_singles,
+        hidden_singles,
+        naked_pairs,
+        naked_triples,
+        hidden_pairs,
+        hidden_triples,
+        hidden_quads,
+        naked_quads,
+        // pointing_pairs_triples,
+        // box_line_reduction
+};
+
 #endif //ELIMINATION_RESULT_HPP

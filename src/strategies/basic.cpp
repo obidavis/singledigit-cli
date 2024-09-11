@@ -3,6 +3,7 @@
 //
 
 #include "basic.hpp"
+#include "../board/cell.hpp"
 #include <format>
 
 // std::string basic_result::to_string() const {
@@ -35,4 +36,14 @@ void basic_elimination::apply(board &b) const {
     for (const auto &[index, cell] : eliminated_cells.indexed_values()) {
         b.eliminate_candidate(cell_index{index}, eliminated_value);
     }
+}
+
+std::string basic_elimination::to_string() const {
+
+    return std::format("{} in cell {}, {}, eliminated {} from cells {}",
+        eliminated_value,
+        index_to_string(set_cell),
+        c_set.to_string(),
+        eliminated_value,
+        eliminated_cells.to_string());
 }

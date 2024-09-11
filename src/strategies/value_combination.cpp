@@ -40,20 +40,6 @@ static std::vector<elimination> value_combination(const board &board) {
     return eliminations;
 }
 
-std::string value_combination_elimination::to_string() const {
-    size_t n = cells.count();
-    static constexpr std::string_view reasons[] = {
-        "Hidden Single",
-        "Hidden Pair",
-        "Hidden Triple",
-        "Hidden Quad"
-    };
-    return std::format("{} in {}, cells {} with values {}",
-                       reasons[n - 1],
-                       c_set.to_string(),
-                       cells.to_string(),
-                       values.to_string());
-}
 
 std::vector<elimination> hidden_singles(const board &bd) {
     return value_combination<1>(bd);
@@ -71,5 +57,24 @@ std::vector<elimination> hidden_quads(const board &bd) {
     return value_combination<4>(bd);
 }
 
+std::string value_combination_elimination::to_string() const {
+    size_t n = cells.count();
+    static constexpr std::string_view reasons[] = {
+        "Hidden Single",
+        "Hidden Pair",
+        "Hidden Triple",
+        "Hidden Quad"
+    };
+    return std::format("{} in {}, cells {} with values {}",
+                       reasons[n - 1],
+                       c_set.to_string(),
+                       cells.to_string(),
+                       values.to_string());
+}
 
-
+void value_combination_elimination::apply(board &b) const {
+    value_set values_complement = ~values;
+    for (const auto &[index, cell] : cells.indexed_values()) {
+        b.eliminate_candidates(index, values_complement);
+    }
+}

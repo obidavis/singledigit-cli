@@ -39,21 +39,6 @@ std::vector<elimination> cell_combination(const board &bd) {
     return eliminations;
 }
 
-std::string cell_combination_elimination::to_string() const {
-    size_t n = cells.count();
-    static constexpr std::string_view reasons[] = {
-        "Naked Single",
-        "Naked Pair",
-        "Naked Triple",
-        "Naked Quad"
-    };
-    return std::format("{} in {}, cells {} with values {}",
-                       reasons[n - 1],
-                       c_set.to_string(),
-                       cells.to_string(),
-                       values.to_string());
-}
-
 std::vector<elimination> naked_singles(const board &bd) {
     return cell_combination<1>(bd);
 }
@@ -70,3 +55,24 @@ std::vector<elimination> naked_quads(const board &bd) {
     return cell_combination<4>(bd);
 }
 
+std::string cell_combination_elimination::to_string() const {
+    size_t n = cells.count();
+    static constexpr std::string_view reasons[] = {
+        "Naked Single",
+        "Naked Pair",
+        "Naked Triple",
+        "Naked Quad"
+    };
+    return std::format("{} in {}, cells {} with values {}",
+                       reasons[n - 1],
+                       c_set.to_string(),
+                       cells.to_string(),
+                       values.to_string());
+}
+
+
+void cell_combination_elimination::apply(board &b) const {
+    for (auto [index, cell] : eliminated_cells.indexed_values()) {
+        b.eliminate_candidates(index, values);
+    }
+}
