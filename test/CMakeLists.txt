@@ -1,0 +1,13 @@
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+add_subdirectory(googletest EXCLUDE_FROM_ALL)
+include(GoogleTest)
+enable_testing()
+
+file(GLOB TEST_SOURCES "*.cpp")
+foreach (TEST_SOURCE ${TEST_SOURCES})
+    get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
+    add_executable(${TEST_NAME} ${TEST_SOURCE})
+    target_link_libraries(${TEST_NAME} sudoku_gen gmock gtest gtest_main)
+    gtest_discover_tests(${TEST_NAME})
+    message(STATUS "Adding test ${TEST_NAME}")
+endforeach ()
