@@ -1,7 +1,6 @@
 add_library(sudoku_gen
         board/board.cpp
         board/cell.cpp
-        board/cell_set.cpp
         board/constraint_set.cpp
         board/value_set.cpp
         strategies/basic.cpp
