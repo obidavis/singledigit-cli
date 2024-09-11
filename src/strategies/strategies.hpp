@@ -5,13 +5,12 @@
 #ifndef ELIMINATION_RESULT_HPP
 #define ELIMINATION_RESULT_HPP
 
+#include "elimination.hpp"
+#include "basic.hpp"
 #include "cell_combination.hpp"
 #include "value_combination.hpp"
-#include "basic.hpp"
-#include "elimination.hpp"
+#include "intersection_removal.hpp"
 
-using strategy_fn = std::vector<elimination_result> (*)(const board&);
-
-#include <variant>
+using strategy_fn = std::vector<elimination> (*)(const board&);
 
 #endif //ELIMINATION_RESULT_HPP
