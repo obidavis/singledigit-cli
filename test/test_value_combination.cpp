@@ -27,7 +27,7 @@ TEST(ValueCombinationTest, HiddenPairs) {
         - removes 1/5/9 from F7
      */
 
-    board bd("4105300hg281j209i2j081381ag614j20h410hh80318412181h00581033k4109g130342gi0k86s811103m8i4igh0l85805210hla81g20550g12181500h0309090h50120654i0i081032181g10h09054111");
+    const board bd("4105300hg281j209i2j081381ag614j20h410hh80318412181h00581033k4109g130342gi0k86s811103m8i4igh0l85805210hla81g20550g12181500h0309090h50120654i0i081032181g10h09054111");
 
     std::vector elims = hidden_pairs(bd);
 
@@ -55,5 +55,24 @@ TEST(ValueCombinationTest, HiddenPairs) {
         .c_set = bd.box(6)
     };
 
-    EXPECT_THAT(elims, testing::UnorderedElementsAre(elim1, elim2, elim3, elim4));
+    std::vector<value_combination_elimination> actual_elims;
+    std::ranges::transform(elims, std::back_inserter(actual_elims), [](const elimination &elim) {
+        return elim.get<value_combination_elimination>();
+    });
+
+    EXPECT_THAT(actual_elims, testing::UnorderedElementsAre(elim1, elim2, elim3, elim4));
+}
+
+TEST(ValueCombinationTest, HiddenPairsApply) {
+    board bd("4105300hg281j209i2j081381ag614j20h410hh80318412181h00581033k4109g130342gi0k86s811103m8i4igh0l85805210hla81g20550g12181500h0309090h50120654i0i081032181g10h09054111");
+    value_combination_elimination elim1 = {
+        .cells = std::as_const(bd).cells_at({D3, E3}),
+        .values = {2, 4},
+        .c_set = bd.col(3)
+    };
+    elim1.apply(bd);
+    for (const cell &c : elim1.cells) {
+        value_set all = c.candidates() | elim1.values;
+        EXPECT_EQ(all, elim1.values);
+    }
 }
