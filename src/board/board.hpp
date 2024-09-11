@@ -24,19 +24,23 @@ public:
 
     [[nodiscard]]
     cell_set cells() const;
+    mutable_cell_set cells();
 
     [[nodiscard]]
     cell_set open_cells() const;
+    mutable_cell_set open_cells();
 
     [[nodiscard]]
     cell_set closed_cells() const;
+    mutable_cell_set closed_cells();
 
     [[nodiscard]]
     cell_set solved_cells() const;
+    mutable_cell_set solved_cells();
 
     [[nodiscard]]
     cell_set cells_at(std::initializer_list<cell_index> indices) const;
-
+    mutable_cell_set cells_at(std::initializer_list<cell_index> indices);
 
     [[nodiscard]] constraint_set row(int index) const;
     [[nodiscard]] constraint_set col(int index) const;

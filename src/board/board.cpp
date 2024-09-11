@@ -71,12 +71,36 @@ cell_set board::cells() const {
     return cell_set{_cells, std::bitset<81>().set()};
 }
 
+mutable_cell_set board::cells() {
+    return mutable_cell_set{_cells, std::bitset<81>().set()};
+}
+
 cell_set board::open_cells() const {
     return cells().open_cells();
 }
 
+mutable_cell_set board::open_cells() {
+    return cells().open_cells();
+}
+
+mutable_cell_set board::closed_cells() {
+    return cells().closed_cells();
+}
+
+
+mutable_cell_set board::solved_cells() {
+    return cells().closed_cells();
+}
 
 cell_set board::cells_at(std::initializer_list<cell_index> indices) const {
+    std::bitset<81> mask;
+    for (int index : indices) {
+        mask.set(index);
+    }
+    return {_cells, mask};
+}
+
+mutable_cell_set board::cells_at(std::initializer_list<cell_index> indices) {
     std::bitset<81> mask;
     for (int index : indices) {
         mask.set(index);
