@@ -1,0 +1,51 @@
+//
+// Created by Obi Davis on 30/08/2024.
+//
+
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
+#include "strategies/cell_combination.hpp"
+
+TEST(CellCombinationTest, NakedPairs) {
+    board bd("0h2222167674g10981c0090590g10h033070c2g11109e260050h600941822194g190960h1105g18g8g0321410921820h41940990g116g111410m2m8109262682a209g176740hb636050ha212093041b2g1");
+
+    std::vector elims = naked_pairs(bd);
+
+    cell_combination_elimination elim1 = {
+        .cells = bd.cells_at({A2, A3}),
+        .values = {1, 6},
+        .c_set = bd.box(1),
+        .eliminated_cells = bd.cells_at({C1})
+    };
+
+    cell_combination_elimination elim2 = {
+        .cells = bd.cells_at({A2, A3}),
+        .values = {1, 6},
+        .c_set = bd.row(1),
+        .eliminated_cells = bd.cells_at({A4, A5, A6})
+    };
+
+    cell_combination_elimination elim3 = {
+        .cells = bd.cells_at({C6, C9}),
+        .values = {6, 7},
+        .c_set = bd.row(3),
+        .eliminated_cells = bd.cells_at({C1, C5})
+    };
+
+    cell_combination_elimination elim4 = {
+        .cells = bd.cells_at({E4, E5}),
+        .values = {4, 8},
+        .c_set = bd.box(5),
+        .eliminated_cells = bd.cells_at({D5, F5})
+    };
+
+    cell_combination_elimination elim5 = {
+        .cells = bd.cells_at({D7, F7}),
+        .values = {5, 8},
+        .c_set = bd.box(6),
+        .eliminated_cells = bd.cells_at({D8, F9})
+    };
+
+
+    EXPECT_THAT(elims, testing::UnorderedElementsAre(elim1, elim2, elim3, elim4, elim5));
+}
