@@ -2,7 +2,7 @@
 #include <bitset>
 #include <gmock/internal/gmock-internal-utils.h>
 
-#include "settools/bitset_combinations.hpp"
+#include "board/detail/bitset_combinations.hpp"
 
 // Function to calculate the binomial coefficient (n choose k)
 unsigned long long choose(unsigned long long n, unsigned long long k) {
@@ -117,16 +117,18 @@ TEST(BitsetCombinationsViewTest, FullCombination) {
     EXPECT_EQ(result, expected);
 }
 
-TEST(BitsetCombinationsViewTest, NoCombination) {
+TEST(BitsetCombinationsViewTest, NoCombinationEmpty) {
     std::bitset<4> bs("0000"); // no bits set
     int n = 2;
-    EXPECT_THROW(bitset_combinations_view<4> combinations(bs, n), std::invalid_argument);
+    bitset_combinations_view<4> combinations(bs, n);
+    EXPECT_EQ(combinations.begin(), combinations.end());
 }
 
-TEST(BitsetCombinationsViewTest, InvalidCombinationThrows) {
+TEST(BitsetCombinationsViewTest, InvalidCombinationEmpty) {
     std::bitset<4> bs("0010"); // only 1 bit set
     int n = 2;
-    EXPECT_THROW(bitset_combinations_view<4> combinations(bs, n), std::invalid_argument);
+    bitset_combinations_view<4> combinations(bs, n);
+    EXPECT_EQ(combinations.begin(), combinations.end());
 }
 
 TEST(BitsetCombinationsViewTest, ValidCombinationDoesNotThrow) {

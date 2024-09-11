@@ -42,11 +42,9 @@ struct bitset_combinations_view {
         if (n <= 0) {
             throw std::invalid_argument("n must be greater than 0");
         }
-
         if (bs.count() < n) {
-            throw std::invalid_argument("Number of bits set in bitset is less than n");
+            this->bs.reset();
         }
-
     }
     struct iterator {
         using value_type = std::bitset<N>;
@@ -72,6 +70,9 @@ struct bitset_combinations_view {
                 // lowest n bits = 1
                 bit_pattern = (one<N> << n) - 1;
             }
+
+            // if no bits set, all iterators == 0
+            bit_pattern *= (k > 0);
         }
 
         bool operator==(const iterator &rhs) const {
