@@ -44,7 +44,7 @@ constraint_set::constraint_set(std::span<const cell, 81> cells, constraint_set_t
 std::string constraint_set::to_string() const {
     switch (type) {
         case constraint_set_type::row:
-            return "Row " + std::to_string('A' + index);
+            return "Row " + std::string{static_cast<char>('A' + index)};
         case constraint_set_type::column:
             return "Col " + std::to_string(index + 1);
         case constraint_set_type::box:

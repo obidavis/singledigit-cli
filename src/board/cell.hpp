@@ -37,6 +37,10 @@ enum cell_index : int {
     I1, I2, I3, I4, I5, I6, I7, I8, I9
 };
 
-
+inline std::string index_to_string(cell_index index) {
+    char row = 'A' + static_cast<int>(index) / 9;
+    char col = '1' + static_cast<int>(index) % 9;
+    return {row, col};
+}
 
 #endif //CELL_HPP
