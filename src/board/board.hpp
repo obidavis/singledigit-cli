@@ -51,7 +51,6 @@ public:
     [[nodiscard]] std::array<constraint_set, 9> boxes() const;
     [[nodiscard]] std::array<constraint_set, 27> c_sets() const;
 
-    std::span<cell, 81> mutable_cells();
     void solve(cell_index index, int value);
     void reset(cell_index index);
     void eliminate_candidate(cell_index index, int value);

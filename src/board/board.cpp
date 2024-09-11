@@ -145,10 +145,6 @@ std::array<constraint_set, 27> board::c_sets() const {
     return std::apply(to_array, std::tuple_cat(rows(), cols(), boxes()));
 }
 
-std::span<cell, 81> board::mutable_cells() {
-    return _cells;
-}
-
 void board::solve(cell_index index, int value) {
     _cells[index].solve(value);
 }
