@@ -6,46 +6,50 @@
 #include "../strategies/basic.hpp"
 #include <algorithm>
 
-static solution_step solve_step(board &bd, const std::vector<strategy_fn> &strategies) {
-    solution_step step;
-    for (auto [index, cell] : bd.open_cells().indexed_values()) {
+std::optional<solution_step> solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {
+    std::optional result = solution_step {
+        .solutions = {},
+        .eliminations = {},
+        .state = bd
+    };
+
+    for (auto [index, cell] : result->state.open_cells().indexed_values()) {
         if (cell.candidates().count() == 1) {
-            step.solutions.push_back({index, cell.candidates().first()});
+            result->solutions.push_back({index, cell.candidates().first()});
             cell.solve(cell.candidates().first());
         }
     }
 
-    if (!step.solutions.empty()) {
-        step.eliminations = {};
-        step.state = bd;
-        return step;
+    if (!result->solutions.empty()) {
+        return result;
     }
 
     for (strategy_fn strategy : strategies) {
-        std::vector<elimination> eliminations = strategy(bd);
-        if (!eliminations.empty()) {
-            for (const elimination &elimination : eliminations) {
-                elimination.apply(bd);
+        result->eliminations = std::move(strategy(bd));
+        if (!result->eliminations.empty()) {
+            for (const elimination &elimination : result->eliminations) {
+                elimination.apply(result->state);
             }
-            step.eliminations = eliminations;
-            step.state = bd;
-            return step;
+            return result;
         }
     }
 
-    return step;
+    return std::nullopt;
 }
 
 std::vector<solution_step> solve(const board &bd, const std::vector<strategy_fn> &strategies) {
     std::vector<solution_step> steps;
-    board copy = bd;
-    while (!copy.is_solved()) {
-        solution_step step = solve_step(copy, strategies);
-        steps.push_back(step);
-        copy = step.state;
-        if (!copy.is_valid()) {
+    const board *current = &bd;
+    do {
+        auto step = solve_step(*current, strategies);
+
+        if (!step || !step->state.is_valid()) {
             return {};
         }
-    }
+
+        current = &step->state;
+        steps.emplace_back(std::move(step.value()));
+
+    } while (!current->is_solved());
     return steps;
 }

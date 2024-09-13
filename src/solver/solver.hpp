@@ -5,6 +5,8 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
+#include <optional>
+
 #include "../board/board.hpp"
 #include "../strategies/strategies.hpp"
 
@@ -19,6 +21,8 @@ struct solution_step {
     board state;
 };
 
+std::optional<solution_step> solve_step(const board &bd, const std::vector<strategy_fn> &strategies);
 std::vector<solution_step> solve(const board &bd, const std::vector<strategy_fn> &strategies);
+
 
 #endif //SOLVER_HPP
