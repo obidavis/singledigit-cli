@@ -3,7 +3,7 @@
 //
 
 #include "solver.hpp"
-#include "../strategies/basic.hpp"
+#include "strategies/basic.hpp"
 #include <algorithm>
 
 std::optional<solution_step> solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {

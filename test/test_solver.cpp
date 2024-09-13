@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "solver/solver.hpp"
+#include "solver.hpp"
 
 TEST(Solver, Solve) {
     testing::internal::CaptureStdout();

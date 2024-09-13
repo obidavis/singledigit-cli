@@ -5,10 +5,11 @@
 #ifndef CELL_COMBINATION_HPP
 #define CELL_COMBINATION_HPP
 
-#include "board/board.hpp"
 #include <vector>
 
+#include "../board/board.hpp"
 #include "elimination.hpp"
+
 
 // struct cell_combination_result {
 //     cell_combination_result(const cell_set &cells, value_set values, const constraint_set &c_set,

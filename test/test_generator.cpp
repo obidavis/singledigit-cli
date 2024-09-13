@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "generator/generator.hpp"
+#include "generator.hpp"
 #include "board/board.hpp"
-#include <chrono>
+
 
 TEST(TestGenerate, Valid) {
     std::string solution = generate_complete_board(0);

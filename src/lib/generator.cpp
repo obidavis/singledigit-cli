@@ -10,7 +10,7 @@
 #include <vector>
 #include <ranges>
 
-#include "../solver/solver.hpp"
+#include "solver.hpp"
 
 static constexpr auto default_board_str =
     "123456789"

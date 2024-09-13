@@ -1,0 +1,1 @@
+add_executable(sudokugen main.cpp)

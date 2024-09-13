@@ -3,7 +3,7 @@
 //
 
 #include "gtest/gtest.h"
-#include "generator/generator.hpp"
+#include "generator.hpp"
 #include "board/board.hpp"
 
 TEST(TestCompleteBoard, Valid) {

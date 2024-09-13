@@ -7,8 +7,8 @@
 
 #include <optional>
 
-#include "../board/board.hpp"
-#include "../strategies/strategies.hpp"
+#include "board/board.hpp"
+#include "strategies/strategies.hpp"
 
 struct cell_solution {
     cell_index cell;

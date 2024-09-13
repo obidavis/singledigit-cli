@@ -5,9 +5,9 @@
 #ifndef BASIC_HPP
 #define BASIC_HPP
 
-#include "board/value_set.hpp"
-#include "board/cell_set.hpp"
-#include "board/board.hpp"
+#include "../board/value_set.hpp"
+#include "../board/cell_set.hpp"
+#include "../board/board.hpp"
 #include <vector>
 
 #include "elimination.hpp"
