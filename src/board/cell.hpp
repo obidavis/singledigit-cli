@@ -7,24 +7,6 @@
 
 #include "value_set.hpp"
 
-struct cell {
-    cell();
-    explicit cell(int value);
-    explicit cell(value_set candidates);
-
-    void solve(int value);
-    void remove_candidate(int value);
-    void remove_candidates(value_set values);
-    [[nodiscard]] int value() const;
-    [[nodiscard]] value_set candidates() const;
-    [[nodiscard]] bool is_solved() const;
-
-    [[nodiscard]] std::string to_string() const;
-private:
-    value_set _candidates;
-    bool _solved;
-};
-
 enum cell_index : int {
     A1, A2, A3, A4, A5, A6, A7, A8, A9,
     B1, B2, B3, B4, B5, B6, B7, B8, B9,
@@ -36,6 +18,28 @@ enum cell_index : int {
     H1, H2, H3, H4, H5, H6, H7, H8, H9,
     I1, I2, I3, I4, I5, I6, I7, I8, I9
 };
+
+struct cell {
+    cell(cell_index index);
+    explicit cell(cell_index index, int value);
+    explicit cell(cell_index index, value_set candidates);
+
+    void solve(int value);
+    void remove_candidate(int value);
+    void remove_candidates(value_set values);
+    [[nodiscard]] int value() const;
+    [[nodiscard]] value_set candidates() const;
+    [[nodiscard]] bool is_solved() const;
+
+    [[nodiscard]] std::string to_string() const;
+
+    [[nodiscard]] cell_index index() const;
+private:
+    cell_index _index;
+    value_set _candidates;
+    bool _solved;
+};
+
 
 inline std::string index_to_string(cell_index index) {
     char row = 'A' + static_cast<int>(index) / 9;

@@ -7,24 +7,24 @@
 #include <format>
 
 template <size_t N>
-static std::vector<elimination> value_combination(const board &board) {
+static std::vector<elimination> value_combination(const board &bd) {
     std::vector<elimination> eliminations;
 
-    for (auto c_set : board.c_sets()) {
+    for (auto c_set : bd.c_sets()) {
 
-        value_set open_values = c_set.open_values();
-        cell_set open_cells = c_set.open_cells();
+        value_set open_values = bd[c_set].open_values();
+        cell_set open_cells = bd[c_set].open_cells();
 
         if (open_values.count() < N) {
             continue;
         }
 
         for (value_set vs : combinations(open_values, N)) {
-            cell_set cells_containing_values = open_cells.where([=](const cell &cell) {
+            cell_set cells_containing_values = bd[open_cells].where([=](const cell &cell) {
                 return (cell.candidates() & vs) != value_set::none();
             });
             if (cells_containing_values.count() == N) {
-                value_set eliminated_values = cells_containing_values.open_values() - vs;
+                value_set eliminated_values = bd[cells_containing_values].open_values() - vs;
                 if (eliminated_values.empty()) {
                     continue;
                 }
@@ -74,7 +74,7 @@ std::string value_combination_elimination::to_string() const {
 
 void value_combination_elimination::apply(board &b) const {
     value_set values_complement = ~values;
-    for (const auto &[index, cell] : cells.indexed_values()) {
-        b.eliminate_candidates(index, values_complement);
+    for (cell &cell : b[cells]) {
+        cell.remove_candidates(values_complement);
     }
 }

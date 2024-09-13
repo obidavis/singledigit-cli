@@ -7,12 +7,12 @@
 
 #include "cell.hpp"
 #include "cell_set.hpp"
+#include "cells_view.hpp"
 #include "constraint_set.hpp"
 
 
 class board {
 public:
-    board();
     explicit board(std::string_view board_string);
 
     [[nodiscard]] std::string to_short_string() const;
@@ -22,25 +22,24 @@ public:
     [[nodiscard]] bool is_valid() const;
     [[nodiscard]] bool is_solved() const;
 
-    [[nodiscard]]
-    cell_set cells() const;
-    mutable_cell_set cells();
+    auto operator[](const cell_set &mask) {
+        return cells_view{ _cells.data(), mask };
+    }
 
-    [[nodiscard]]
-    cell_set open_cells() const;
-    mutable_cell_set open_cells();
+    auto operator[](const cell_set &mask) const {
+        return cells_view{ _cells.data(), mask };
+    }
 
-    [[nodiscard]]
-    cell_set closed_cells() const;
-    mutable_cell_set closed_cells();
+    cell &operator[](cell_index index) {
+        return _cells[index];
+    }
 
-    [[nodiscard]]
-    cell_set solved_cells() const;
-    mutable_cell_set solved_cells();
+    const cell &operator[](cell_index index) const {
+        return _cells[index];
+    }
 
-    [[nodiscard]]
-    cell_set cells_at(std::initializer_list<cell_index> indices) const;
-    mutable_cell_set cells_at(std::initializer_list<cell_index> indices);
+    [[nodiscard]] cell_set open_cells() const;
+    [[nodiscard]] cell_set solved_cells() const;
 
     [[nodiscard]] constraint_set row(int index) const;
     [[nodiscard]] constraint_set col(int index) const;
@@ -51,10 +50,6 @@ public:
     [[nodiscard]] std::array<constraint_set, 9> boxes() const;
     [[nodiscard]] std::array<constraint_set, 27> c_sets() const;
 
-    void solve(cell_index index, int value);
-    void reset(cell_index index);
-    void eliminate_candidate(cell_index index, int value);
-    void eliminate_candidates(cell_index index, value_set values);
 private:
     std::array<cell, 81> _cells;
 };

@@ -10,14 +10,14 @@ std::vector<elimination> cell_combination(const board &bd) {
     std::vector<elimination> eliminations;
 
     for (auto c_set : bd.c_sets()) {
-        cell_set open_cells = c_set.open_cells();
+        cell_set open_cells = bd[c_set].open_cells();
 
         for (cell_set cell_combination : combinations(open_cells, N)) {
-            value_set values_contained_in_cells = cell_combination.open_values();
+            value_set values_contained_in_cells = bd[cell_combination].open_values();
             if (values_contained_in_cells.count() == N) {
 
                 cell_set other_cells = open_cells - cell_combination;
-                cell_set other_cells_containing_values = other_cells.where([values_contained_in_cells](const cell &cell) {
+                cell_set other_cells_containing_values = bd[other_cells].where([values_contained_in_cells](const cell &cell) {
                     return (cell.candidates() & values_contained_in_cells) != value_set::none();
                 });
 
@@ -72,7 +72,7 @@ std::string cell_combination_elimination::to_string() const {
 
 
 void cell_combination_elimination::apply(board &b) const {
-    for (auto [index, cell] : eliminated_cells.indexed_values()) {
-        b.eliminate_candidates(index, values);
+    for (cell &c : b[eliminated_cells]) {
+        c.remove_candidates(values);
     }
 }

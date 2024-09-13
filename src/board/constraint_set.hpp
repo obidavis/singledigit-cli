@@ -10,7 +10,7 @@ enum class constraint_set_type {
 };
 
 struct constraint_set : cell_set {
-    constraint_set(std::span<const cell, 81> cells, constraint_set_type type, int index);
+    constraint_set(constraint_set_type type, int index);
 
     [[nodiscard]] std::string to_string() const;
 

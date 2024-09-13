@@ -11,8 +11,8 @@ TEST(IntersectionRemoval, PointingPairsTriples) {
     std::vector results = pointing_pairs_triples(bd);
 
     intersection_removal_elimination elim {
-        .intersection = std::as_const(bd).cells_at({E1, E3}),
-        .eliminated_cells = std::as_const(bd).cells_at({E7}),
+        .intersection = {E1, E3},
+        .eliminated_cells = {E7},
         .eliminated_values = {9},
         .c_sets = {bd.box(4), bd.row(5)}
     };

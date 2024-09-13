@@ -13,10 +13,10 @@ std::optional<solution_step> solve_step(const board &bd, const std::vector<strat
         .state = bd
     };
 
-    for (auto [index, cell] : result->state.open_cells().indexed_values()) {
-        if (cell.candidates().count() == 1) {
-            result->solutions.push_back({index, cell.candidates().first()});
-            cell.solve(cell.candidates().first());
+    for (auto i = cell_index{0}; i < 81; i = cell_index{i + 1}) {
+        if (!bd[i].is_solved() && bd[i].candidates().count() == 1) {
+            result->solutions.push_back({i, bd[i].candidates().first()});
+            result->state[i].solve(bd[i].candidates().first());
         }
     }
 

@@ -37,8 +37,8 @@ static constexpr std::bitset<81> constraint_mask(constraint_set_type type, int i
     }
 }
 
-constraint_set::constraint_set(std::span<const cell, 81> cells, constraint_set_type type, int index)
-    : cell_set(cells, constraint_mask(type, index)), type(type), index(index) {}
+constraint_set::constraint_set(constraint_set_type type, int index)
+    : cell_set(constraint_mask(type, index)), type(type), index(index) {}
 
 
 std::string constraint_set::to_string() const {

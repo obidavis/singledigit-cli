@@ -7,7 +7,7 @@
 
 // Test for default constructor
 TEST(CellTest, DefaultConstructor) {
-    cell c;
+    cell c(A1);
     EXPECT_FALSE(c.is_solved());
     EXPECT_DEBUG_DEATH((void)c.value(), "");
     value_set vs({1, 2, 3, 4, 5, 6, 7, 8, 9});
@@ -16,7 +16,7 @@ TEST(CellTest, DefaultConstructor) {
 
 // Test for constructor with a value
 TEST(CellTest, ConstructorWithValue) {
-    cell c(5);
+    cell c(A1, 5);
     EXPECT_TRUE(c.is_solved());
     EXPECT_EQ(c.value(), 5);
     EXPECT_DEBUG_DEATH((void)c.candidates(), "");
@@ -25,13 +25,13 @@ TEST(CellTest, ConstructorWithValue) {
 // Test for constructor with value_set as candidates
 TEST(CellTest, ConstructorWithCandidates) {
     value_set vs({1, 2, 3});
-    cell c(vs);
+    cell c(A1, vs);
     EXPECT_FALSE(c.is_solved());
     EXPECT_DEBUG_DEATH((void)c.value(), "");
     EXPECT_EQ(c.candidates(), vs);
 
     value_set vs2({7});
-    cell c2(vs2);
+    cell c2(A1, vs2);
     EXPECT_FALSE(c2.is_solved());
     EXPECT_DEBUG_DEATH((void)c2.value(), "");
     EXPECT_EQ(c2.candidates(), vs2);
@@ -39,7 +39,7 @@ TEST(CellTest, ConstructorWithCandidates) {
 
 // Test for solve method
 TEST(CellTest, SolveMethod) {
-    cell c;
+    cell c(A1);
     c.solve(4);
     EXPECT_TRUE(c.is_solved());
     EXPECT_EQ(c.value(), 4);
@@ -51,7 +51,7 @@ TEST(CellTest, SolveMethod) {
 
 // Test for is_solved method
 TEST(CellTest, IsSolved) {
-    cell c;
+    cell c(A1);
     EXPECT_FALSE(c.is_solved());
 
     c.solve(3);
@@ -61,7 +61,7 @@ TEST(CellTest, IsSolved) {
 // Test for candidates method
 TEST(CellTest, Candidates) {
     value_set vs({2, 4, 6});
-    cell c(vs);
+    cell c(A1, vs);
     EXPECT_EQ(c.candidates().to_string(), "{2, 4, 6}");
 
     c.solve(3);
@@ -70,14 +70,14 @@ TEST(CellTest, Candidates) {
 
 // Test for value method
 TEST(CellTest, Value) {
-    cell c;
+    cell c(A1);
     EXPECT_DEBUG_DEATH((void)c.value(), "");
 
     c.solve(5);
     EXPECT_EQ(c.value(), 5);
 
     value_set vs({1, 2, 3});
-    cell c2(vs);
+    cell c2(A1, vs);
     EXPECT_DEBUG_DEATH((void)c2.value(), "");
 
     c2.solve(7);

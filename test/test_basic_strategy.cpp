@@ -121,8 +121,8 @@ TEST(BasicStrategy, Test1) {
     EXPECT_THAT(basic_elims, testing::SizeIs(3 * 17));
 
     // All open cells in the constraint set should be eliminated
-    bool all_open_cells_eliminated = std::ranges::all_of(basic_elims, [](const basic_elimination &result) {
-        return result.eliminated_cells == result.c_set.open_cells();
+    bool all_open_cells_eliminated = std::ranges::all_of(basic_elims, [&](const basic_elimination &result) {
+        return result.eliminated_cells == bd[result.c_set].open_cells();
     });
     EXPECT_TRUE(all_open_cells_eliminated);
 }

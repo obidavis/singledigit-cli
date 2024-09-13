@@ -32,27 +32,27 @@ TEST(ValueCombinationTest, HiddenPairs) {
     std::vector elims = hidden_pairs(bd);
 
     value_combination_elimination elim1 = {
-        .cells = bd.cells_at({D3, E3}),
+        .cells = {D3, E3},
         .values = {2, 4},
-        .c_set = bd.col(3)
+        .c_set = {constraint_set_type::column, 2}
     };
 
     value_combination_elimination elim2 = {
-        .cells = bd.cells_at({D3, E3}),
+        .cells = {D3, E3},
         .values = {2, 4},
-        .c_set = bd.box(4)
+        .c_set = {constraint_set_type::box, 3}
     };
 
     value_combination_elimination elim3 = {
-        .cells = bd.cells_at({E7, F7}),
+        .cells = {E7, F7},
         .values = {3, 7},
-        .c_set = bd.col(7)
+        .c_set = {constraint_set_type::column, 6}
     };
 
     value_combination_elimination elim4 = {
-        .cells = bd.cells_at({E7, F7}),
+        .cells = {E7, F7},
         .values = {3, 7},
-        .c_set = bd.box(6)
+        .c_set = {constraint_set_type::box, 5}
     };
 
     std::vector<value_combination_elimination> actual_elims;
@@ -66,12 +66,12 @@ TEST(ValueCombinationTest, HiddenPairs) {
 TEST(ValueCombinationTest, HiddenPairsApply) {
     board bd("4105300hg281j209i2j081381ag614j20h410hh80318412181h00581033k4109g130342gi0k86s811103m8i4igh0l85805210hla81g20550g12181500h0309090h50120654i0i081032181g10h09054111");
     value_combination_elimination elim1 = {
-        .cells = std::as_const(bd).cells_at({D3, E3}),
+        .cells = {D3, E3},
         .values = {2, 4},
-        .c_set = bd.col(3)
+        .c_set = constraint_set{constraint_set_type::column, 3}
     };
     elim1.apply(bd);
-    for (const cell &c : elim1.cells) {
+    for (const cell &c : bd[elim1.cells]) {
         value_set all = c.candidates() | elim1.values;
         EXPECT_EQ(all, elim1.values);
     }

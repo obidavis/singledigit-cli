@@ -5,21 +5,22 @@
 #include "intersection_removal.hpp"
 
 #include <format>
+#include <sys/fcntl.h>
 
-static void intersection_removal(std::vector<elimination> &results, const constraint_set &cset1, const constraint_set &cset2) {
-    cell_set intersection = cset1.open_cells() & cset2.open_cells();
+static void intersection_removal(std::vector<elimination> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
+    cell_set intersection = bd[cset1].open_cells() & bd[cset2].open_cells();
     if (intersection.empty()) {
         return;
     }
     for (int value = 1; value <= 9; value++) {
-
-        cell_set cells_containing_value = cset1.open_cells().where([value](const cell &cell) {
+        cell_set open_cells = bd[cset1].open_cells();
+        cell_set cells_containing_value = bd[open_cells].where([value](const cell &cell) {
             return cell.candidates().at(value);
         });
 
         if (cells_containing_value == intersection) {
-            cell_set other_cells = cset2.open_cells() - intersection;
-            cell_set eliminated_cells = other_cells.where([value](const cell &cell) {
+            cell_set other_cells = bd[cset2].open_cells() - intersection;
+            cell_set eliminated_cells = bd[other_cells].where([value](const cell &cell) {
                 return cell.candidates().at(value);
             });
             if (!eliminated_cells.empty()) {
@@ -39,10 +40,10 @@ std::vector<elimination> pointing_pairs_triples(const board &bd) {
     std::vector<elimination> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
-            intersection_removal(results, box, row);
+            intersection_removal(results, bd, box, row);
         }
         for (constraint_set col : bd.cols()) {
-            intersection_removal(results, box, col);
+            intersection_removal(results, bd, box, col);
         }
     }
     return results;
@@ -52,10 +53,10 @@ std::vector<elimination> box_line_reduction(const board &bd) {
     std::vector<elimination> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
-            intersection_removal(results, row, box);
+            intersection_removal(results, bd, row, box);
         }
         for (constraint_set col : bd.cols()) {
-            intersection_removal(results, col, box);
+            intersection_removal(results, bd, col, box);
         }
     }
     return results;
@@ -66,7 +67,7 @@ std::string intersection_removal_elimination::to_string() const {
 }
 
 void intersection_removal_elimination::apply(board &b) const {
-    for (const auto &[index, cell] : eliminated_cells.indexed_values()) {
-        b.eliminate_candidate(index, eliminated_values.first());
+    for (cell &c : b[eliminated_cells]) {
+        c.remove_candidates(eliminated_values);
     }
 }

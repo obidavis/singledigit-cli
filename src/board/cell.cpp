@@ -2,13 +2,13 @@
 
 #include <cassert>
 
-cell::cell() : _candidates(value_set::all()), _solved(false) {}
+cell::cell(cell_index index) : _index(index), _candidates(value_set::all()), _solved(false) {}
 
-cell::cell(int value) : _candidates({value}), _solved(true) {
+cell::cell(cell_index index, int value) : _index(index), _candidates({value}), _solved(true) {
     assert(value > 0 && value < 10);
 }
 
-cell::cell(value_set candidates) : _candidates(candidates), _solved(false) {}
+cell::cell(cell_index index, value_set candidates) : _index(index), _candidates(candidates), _solved(false) {}
 
 int cell::value() const {
     assert(is_solved());
@@ -26,6 +26,10 @@ bool cell::is_solved() const {
 
 std::string cell::to_string() const {
     return _candidates.to_string();
+}
+
+cell_index cell::index() const {
+    return _index;
 }
 
 void cell::solve(int value) {
