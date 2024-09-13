@@ -43,7 +43,11 @@ std::string board::to_short_string() const {
     std::string result;
     result.reserve(81);
     for (const cell &c : _cells) {
-        result.push_back(c.is_solved() * c.value() + '0');
+        if (c.is_solved()) {
+            result.push_back('0' + c.value());
+        } else {
+            result.push_back('0');
+        }
     }
     return result;
 }
