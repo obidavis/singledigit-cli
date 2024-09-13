@@ -7,7 +7,7 @@ add_library(sudoku_gen
         strategies/cell_combination.cpp
         strategies/intersection_removal.cpp
         strategies/value_combination.cpp
+        strategies/elimination.cpp
         solver/solver.cpp
-        generator/complete_board.cpp
-        strategies/elimination.cpp)
+        generator/generator.cpp)
 target_include_directories(sudoku_gen PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
