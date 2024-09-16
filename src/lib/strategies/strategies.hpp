@@ -5,7 +5,6 @@
 #ifndef ELIMINATION_RESULT_HPP
 #define ELIMINATION_RESULT_HPP
 
-#include "elimination.hpp"
 #include "basic.hpp"
 #include "cell_combination.hpp"
 #include "value_combination.hpp"

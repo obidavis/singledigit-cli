@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "../board/board.hpp"
-#include "elimination.hpp"
 
 template <size_t N>
 struct cell_combination_elimination {

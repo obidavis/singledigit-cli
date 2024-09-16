@@ -7,7 +7,6 @@ add_library(sudokugen_lib
         strategies/cell_combination.cpp
         strategies/intersection_removal.cpp
         strategies/value_combination.cpp
-        strategies/elimination.cpp
         solver.cpp
         generator.cpp
         board/cell_set.cpp

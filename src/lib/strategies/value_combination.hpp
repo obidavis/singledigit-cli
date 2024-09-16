@@ -6,7 +6,6 @@
 #define VALUE_COMBINATION_HPP
 
 #include "board/board.hpp"
-#include "elimination.hpp"
 #include <vector>
 
 template <size_t N>

@@ -5,7 +5,6 @@
 #ifndef INTERSECTION_REMOVAL_HPP
 #define INTERSECTION_REMOVAL_HPP
 
-#include "elimination.hpp"
 #include "../board/board.hpp"
 #include <vector>
 

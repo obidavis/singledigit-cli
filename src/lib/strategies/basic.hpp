@@ -10,8 +10,6 @@
 #include "../board/board.hpp"
 #include <vector>
 
-#include "elimination.hpp"
-
 struct basic_elimination {
     cell_index set_cell;
     int eliminated_value;
