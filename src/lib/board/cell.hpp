@@ -25,8 +25,8 @@ struct cell {
     explicit cell(cell_index index, value_set candidates);
 
     void solve(int value);
-    void remove_candidate(int value);
-    void remove_candidates(value_set values);
+    int remove_candidate(int value);
+    int remove_candidates(value_set values);
     [[nodiscard]] int value() const;
     [[nodiscard]] value_set candidates() const;
     [[nodiscard]] bool is_solved() const;

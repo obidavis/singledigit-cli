@@ -170,15 +170,25 @@ static std::vector<index_single> generate_singles(std::string_view existing) {
 
 template <size_t N>
 static void safely_remove(std::string &bd, const std::vector<std::array<int, N>> &index_groups, int target_empties) {
-    std::array<char, N> copy{};
-    for (auto &index_group : index_groups) {
+    for (const auto &index_group : index_groups) {
         if (std::ranges::count(bd, '0') >= target_empties) {
             break;
         }
+
+        // Copy the values to be removed
+        std::array<char, N> copy{};
         for (int i = 0; i < N; ++i) {
             copy[i] = bd[index_group[i]];
+        }
+
+        // Remove the values
+        // NOTE: this is done in two steps because if the index
+        // group contains duplicates, the first removal will
+        // clobber the copy making us unable to reset to a valid state.
+        for (int i = 0; i < N; ++i) {
             bd[index_group[i]] = '0';
         }
+
         if (!is_solvable(bd)) {
             for (int i = 0; i < N; ++i) {
                 bd[index_group[i]] = copy[i];
@@ -196,7 +206,7 @@ std::string puzzle_generator::generate(std::string_view solution) {
 
     std::vector doubles = generate_doubles(board_str);
     std::ranges::shuffle(doubles, gen);
-    safely_remove(board_str, doubles, 50);
+    safely_remove(board_str, doubles, 60);
 
     std::vector singles = generate_singles(board_str);
     std::ranges::shuffle(singles, gen);

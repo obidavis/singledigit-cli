@@ -6,50 +6,53 @@
 #include "strategies/basic.hpp"
 #include <algorithm>
 
-std::optional<solution_step> solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {
-    std::optional result = solution_step {
-        .solutions = {},
+solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {
+    solution_step result = {
         .eliminations = {},
+        .total_eliminations = 0,
+        .solutions = {},
+        .total_solutions = 0,
         .state = bd
     };
 
+    for (strategy_fn strategy : strategies) {
+        auto eliminations = strategy(bd);
+        if (!empty(eliminations)) {
+            result.eliminations = std::move(eliminations);
+            std::visit([&]<typename T>(const std::vector<T> &elims) {
+                for (const T &elim : elims) {
+                    result.total_eliminations += elim.apply(result.state);
+                }
+            }, result.eliminations);
+            // for (const elimination &elimination : result.eliminations) {
+            //     result.total_eliminations += std::visit([&result](const auto &elim) {
+            //         return elim.apply(result.state);
+            //     }, elimination);
+            // }
+            break;
+        }
+    }
+
     for (auto i = cell_index{0}; i < 81; i = cell_index{i + 1}) {
         if (!bd[i].is_solved() && bd[i].candidates().count() == 1) {
-            result->solutions.push_back({i, bd[i].candidates().first()});
-            result->state[i].solve(bd[i].candidates().first());
+            result.solutions.push_back({i, bd[i].candidates().first()});
+            result.state[i].solve(bd[i].candidates().first());
+            ++result.total_solutions;
         }
     }
 
-    if (!result->solutions.empty()) {
-        return result;
-    }
-
-    for (strategy_fn strategy : strategies) {
-        result->eliminations = std::move(strategy(bd));
-        if (!result->eliminations.empty()) {
-            for (const elimination &elimination : result->eliminations) {
-                elimination.apply(result->state);
-            }
-            return result;
-        }
-    }
-
-    return std::nullopt;
+    return result;
 }
 
 std::vector<solution_step> solve(const board &bd, const std::vector<strategy_fn> &strategies) {
     std::vector<solution_step> steps;
-    const board *current = &bd;
-    do {
-        auto step = solve_step(*current, strategies);
-
-        if (!step || !step->state.is_valid()) {
+    steps.emplace_back(solve_step(bd, strategies));
+    while (!steps.back().state.is_solved()) {
+        const auto &step = steps.back();
+        if (!step.made_progress() || !step.state.is_valid()) {
             return {};
         }
-
-        current = &step->state;
-        steps.emplace_back(std::move(step.value()));
-
-    } while (!current->is_solved());
+        steps.emplace_back(solve_step(step.state, strategies));
+    }
     return steps;
 }

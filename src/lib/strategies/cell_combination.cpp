@@ -6,8 +6,8 @@
 #include <format>
 
 template <size_t N>
-std::vector<elimination> cell_combination(const board &bd) {
-    std::vector<elimination> eliminations;
+std::vector<cell_combination_elimination<N>> cell_combination(const board &bd) {
+    std::vector<cell_combination_elimination<N>> eliminations;
 
     for (auto c_set : bd.c_sets()) {
         cell_set open_cells = bd[c_set].open_cells();
@@ -25,7 +25,7 @@ std::vector<elimination> cell_combination(const board &bd) {
                     continue;
                 }
 
-                cell_combination_elimination elim = {
+                cell_combination_elimination<N> elim = {
                     .cells = cell_combination,
                     .values = values_contained_in_cells,
                     .c_set = c_set,
@@ -39,23 +39,24 @@ std::vector<elimination> cell_combination(const board &bd) {
     return eliminations;
 }
 
-std::vector<elimination> naked_singles(const board &bd) {
+std::vector<naked_single_elimination> naked_singles(const board &bd) {
     return cell_combination<1>(bd);
 }
 
-std::vector<elimination> naked_pairs(const board &bd) {
+std::vector<naked_pair_elimination> naked_pairs(const board &bd) {
     return cell_combination<2>(bd);
 }
 
-std::vector<elimination> naked_triples(const board &bd) {
+std::vector<naked_triple_elimination> naked_triples(const board &bd) {
     return cell_combination<3>(bd);
 }
 
-std::vector<elimination> naked_quads(const board &bd) {
+std::vector<naked_quad_elimination> naked_quads(const board &bd) {
     return cell_combination<4>(bd);
 }
 
-std::string cell_combination_elimination::to_string() const {
+template <size_t N>
+std::string cell_combination_elimination<N>::to_string() const {
     size_t n = cells.count();
     static constexpr std::string_view reasons[] = {
         "Naked Single",
@@ -70,9 +71,16 @@ std::string cell_combination_elimination::to_string() const {
                        values.to_string());
 }
 
-
-void cell_combination_elimination::apply(board &b) const {
+template <size_t N>
+int cell_combination_elimination<N>::apply(board &b) const {
+    int total_eliminations = 0;
     for (cell &c : b[eliminated_cells]) {
-        c.remove_candidates(values);
+        total_eliminations += c.remove_candidates(values);
     }
+    return total_eliminations;
 }
+
+template struct cell_combination_elimination<1>;
+template struct cell_combination_elimination<2>;
+template struct cell_combination_elimination<3>;
+template struct cell_combination_elimination<4>;

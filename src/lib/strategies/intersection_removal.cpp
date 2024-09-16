@@ -7,7 +7,7 @@
 #include <format>
 #include <sys/fcntl.h>
 
-static void intersection_removal(std::vector<elimination> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
+static void intersection_removal(std::vector<intersection_removal_elimination> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
     cell_set intersection = bd[cset1].open_cells() & bd[cset2].open_cells();
     if (intersection.empty()) {
         return;
@@ -36,8 +36,8 @@ static void intersection_removal(std::vector<elimination> &results, const board 
     }
 }
 
-std::vector<elimination> pointing_pairs_triples(const board &bd) {
-    std::vector<elimination> results;
+std::vector<intersection_removal_elimination> pointing_pairs_triples(const board &bd) {
+    std::vector<intersection_removal_elimination> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
             intersection_removal(results, bd, box, row);
@@ -49,8 +49,8 @@ std::vector<elimination> pointing_pairs_triples(const board &bd) {
     return results;
 }
 
-std::vector<elimination> box_line_reduction(const board &bd) {
-    std::vector<elimination> results;
+std::vector<intersection_removal_elimination> box_line_reduction(const board &bd) {
+    std::vector<intersection_removal_elimination> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
             intersection_removal(results, bd, row, box);
@@ -66,8 +66,10 @@ std::string intersection_removal_elimination::to_string() const {
     return std::format("Intersection Removal: {} in {} eliminated from {}", eliminated_values.to_string(), intersection.to_string(), eliminated_cells.to_string());
 }
 
-void intersection_removal_elimination::apply(board &b) const {
+int intersection_removal_elimination::apply(board &b) const {
+    int total_eliminations = 0;
     for (cell &c : b[eliminated_cells]) {
-        c.remove_candidates(eliminated_values);
+        total_eliminations += c.remove_candidates(eliminated_values);
     }
+    return total_eliminations;
 }

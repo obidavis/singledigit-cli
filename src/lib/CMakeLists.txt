@@ -10,5 +10,6 @@ add_library(sudokugen_lib
         strategies/elimination.cpp
         solver.cpp
         generator.cpp
-        board/cell_set.cpp)
+        board/cell_set.cpp
+        grader.cpp)
 target_include_directories(sudokugen_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

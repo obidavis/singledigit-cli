@@ -38,14 +38,18 @@ void cell::solve(int value) {
     _solved = true;
 }
 
-void cell::remove_candidate(int value) {
+int cell::remove_candidate(int value) {
     assert(!is_solved());
+    int removed = _candidates.at(value);
     _candidates.set(value, false);
+    return removed;
 }
 
-void cell::remove_candidates(value_set values) {
+int cell::remove_candidates(value_set values) {
     assert(!is_solved());
+    int removed = (candidates() & values).count();
     _candidates &= ~values;
+    return removed;
 }
 
 

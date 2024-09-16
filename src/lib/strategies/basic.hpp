@@ -12,6 +12,16 @@
 
 #include "elimination.hpp"
 
-std::vector<elimination> basic(const board &bd);
+struct basic_elimination {
+    cell_index set_cell;
+    int eliminated_value;
+    cell_set eliminated_cells;
+    constraint_set c_set;
+    [[nodiscard]] std::string to_string() const;
+    int apply(board &b) const;
+    [[nodiscard]] bool operator==(const basic_elimination &other) const = default;
+};
+
+std::vector<basic_elimination> basic(const board &bd);
 
 #endif //BASIC_HPP

@@ -6,8 +6,8 @@
 #include "../board/cell.hpp"
 #include <format>
 
-std::vector<elimination> basic(const board &bd) {
-    std::vector<elimination> results;
+std::vector<basic_elimination> basic(const board &bd) {
+    std::vector<basic_elimination> results;
     for (constraint_set c_set : bd.c_sets()) {
         cell_set solved_cells = bd[c_set].solved_cells();
         for (const cell &c : bd[solved_cells]) {
@@ -30,10 +30,12 @@ std::vector<elimination> basic(const board &bd) {
     return results;
 }
 
-void basic_elimination::apply(board &b) const {
+int basic_elimination::apply(board &b) const {
+    int total_eliminations = 0;
     for (cell &cell : b[eliminated_cells]) {
-        cell.remove_candidate(eliminated_value);
+        total_eliminations += cell.remove_candidate(eliminated_value);
     }
+    return total_eliminations;
 }
 
 std::string basic_elimination::to_string() const {

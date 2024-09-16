@@ -9,7 +9,17 @@
 #include "../board/board.hpp"
 #include <vector>
 
-std::vector<elimination> pointing_pairs_triples(const board &bd);
-std::vector<elimination> box_line_reduction(const board &bd);
+struct intersection_removal_elimination {
+    cell_set intersection;
+    cell_set eliminated_cells;
+    value_set eliminated_values;
+    std::pair<constraint_set, constraint_set> c_sets;
+    [[nodiscard]] std::string to_string() const;
+    int apply(board &b) const;
+    [[nodiscard]] bool operator==(const intersection_removal_elimination &other) const = default;
+};
+
+std::vector<intersection_removal_elimination> pointing_pairs_triples(const board &bd);
+std::vector<intersection_removal_elimination> box_line_reduction(const board &bd);
 
 #endif //INTERSECTION_REMOVAL_HPP

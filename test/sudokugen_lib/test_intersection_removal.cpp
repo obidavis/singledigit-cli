@@ -19,7 +19,7 @@ TEST(IntersectionRemoval, PointingPairsTriples) {
 
     std::vector<intersection_removal_elimination> concrete;
     std::transform(results.begin(), results.end(), std::back_inserter(concrete), [](const elimination &e) {
-        return e.get<intersection_removal_elimination>();
+        return std::get<intersection_removal_elimination>(e);
     });
     EXPECT_THAT(concrete, testing::UnorderedElementsAre(elim));
 }

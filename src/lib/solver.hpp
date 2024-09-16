@@ -5,8 +5,6 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
-#include <optional>
-
 #include "board/board.hpp"
 #include "strategies/strategies.hpp"
 
@@ -16,12 +14,17 @@ struct cell_solution {
 };
 
 struct solution_step {
+    strategy_result eliminations;
+    int total_eliminations;
     std::vector<cell_solution> solutions;
-    std::vector<elimination> eliminations;
+    int total_solutions;
     board state;
+    [[nodiscard]] bool made_progress() const {
+        return !empty(eliminations) || !solutions.empty();
+    }
 };
 
-std::optional<solution_step> solve_step(const board &bd, const std::vector<strategy_fn> &strategies);
+solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strategies);
 std::vector<solution_step> solve(const board &bd, const std::vector<strategy_fn> &strategies);
 
 

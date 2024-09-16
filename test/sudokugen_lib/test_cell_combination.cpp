@@ -48,7 +48,7 @@ TEST(CellCombinationTest, NakedPairs) {
 
     std::vector<cell_combination_elimination> actual_elims;
     std::ranges::transform(elims, std::back_inserter(actual_elims), [](const elimination &elim) {
-        return elim.get<cell_combination_elimination>();
+        return std::get<cell_combination_elimination>(elim);
     });
     EXPECT_THAT(actual_elims, testing::UnorderedElementsAre(elim1, elim2, elim3, elim4, elim5));
 }

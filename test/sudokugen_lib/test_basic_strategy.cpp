@@ -13,7 +13,7 @@ TEST(BasicStrategy, Test1) {
     std::vector elims = basic(bd);
     std::vector<basic_elimination> basic_elims;
     std::transform(elims.begin(), elims.end(), std::back_inserter(basic_elims), [](const elimination &elim) {
-        return elim.get<basic_elimination>();
+        return std::get<basic_elimination>(elim);
     });
 
     auto a5_count = std::ranges::count_if(basic_elims, [](const basic_elimination &result) {
