@@ -33,7 +33,7 @@ static constexpr std::bitset<81> constraint_mask(constraint_set_type type, int i
         case constraint_set_type::box:
             return box_mask(index);
         default:
-            std::unreachable();
+            __builtin_unreachable();
     }
 }
 
@@ -50,6 +50,6 @@ std::string constraint_set::to_string() const {
         case constraint_set_type::box:
             return "Box " + std::to_string(index + 1);
         default:
-            std::unreachable();
+            __builtin_unreachable();
     }
 }

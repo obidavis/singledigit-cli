@@ -2,9 +2,10 @@
 // Created by Obi Davis on 17/09/2024.
 //
 
-#include "uniqueness.hpp"
+#include <algorithm>
 
-#include <solver.hpp>
+#include "uniqueness.hpp"
+#include "solver.hpp"
 
 #include "strategies/basic.hpp"
 #include "strategies/value_combination.hpp"

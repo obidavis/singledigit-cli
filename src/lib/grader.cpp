@@ -5,6 +5,7 @@
 #include "grader.hpp"
 #include <unordered_map>
 #include <typeindex>
+#include <limits>
 
 static const std::unordered_map<std::type_index, float> scale_factors = {
     {typeid(basic_elimination), 0.1f},

@@ -5,7 +5,7 @@
 #include "cxxopts.hpp"
 #include "generate.hpp"
 #include "solve.hpp"
-#include <print>
+#include <fmt/core.h>
 #include <chrono>
 #include <iostream>
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         auto result = options.parse(argc, argv);
 
         if (result.count("help")) {
-            std::println("{}", options.help());
+            fmt::println("{}", options.help());
             return 0;
         }
 
@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
             });
             auto elapsed = duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now);
             for (const auto &puzzle : generated) {
-                std::println("{}", puzzle.puzzle.to_short_string());
-                std::println("\t Difficulty: {}", puzzle.breakdown.grade());
+                fmt::println("{}", puzzle.puzzle.to_short_string());
+                fmt::println("\t Difficulty: {}", puzzle.breakdown.grade());
             }
-            std::println("Generated {} puzzles in {}ms", generated.size(), elapsed.count());
+            fmt::println("Generated {} puzzles in {}ms", generated.size(), elapsed.count());
         } else if (verb == "solve") {
             if (!result.count("puzzle")) {
                 std::cerr << "Puzzle must be specified for solve\n";
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
             }
             auto solution = solve(puzzle);
             for (const auto &step : solution) {
-                std::println("{}", step.to_string());
+                fmt::println("{}", step.to_string());
             }
             return 0;
         } else {

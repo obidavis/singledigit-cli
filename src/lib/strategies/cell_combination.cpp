@@ -3,7 +3,7 @@
 //
 
 #include "cell_combination.hpp"
-#include <format>
+#include <fmt/core.h>
 
 template <size_t N>
 std::vector<cell_combination_elimination<N>> cell_combination(const board &bd) {
@@ -64,7 +64,7 @@ std::string cell_combination_elimination<N>::to_string() const {
         "Naked Triple",
         "Naked Quad"
     };
-    return std::format("{} in {}, cells {} with values {}",
+    return fmt::format("{} in {}, cells {} with values {}",
                        reasons[n - 1],
                        c_set.to_string(),
                        cells.to_string(),

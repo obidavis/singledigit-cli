@@ -13,3 +13,4 @@ add_library(sudokugen_lib
         grader.cpp
         uniqueness.cpp)
 target_include_directories(sudokugen_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(sudokugen_lib fmt::fmt)

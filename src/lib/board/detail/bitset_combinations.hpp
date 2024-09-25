@@ -5,6 +5,8 @@
 #ifndef COMBINATIONS_HPP
 #define COMBINATIONS_HPP
 
+#include <bit>
+
 // http://graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
 template<std::unsigned_integral T>
 static constexpr T next_bit_permutation(T v) {

@@ -3,7 +3,7 @@
 //
 
 #include "solver.hpp"
-#include "strategies/basic.hpp"
+#include "strategies/strategies.hpp"
 #include <algorithm>
 #include <sstream>
 

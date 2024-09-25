@@ -4,7 +4,7 @@
 #include "board/cell_set.hpp"
 #include "board/value_set.hpp"
 #include "value_combination.hpp"
-#include <format>
+#include <fmt/core.h>
 
 template <size_t N>
 static std::vector<value_combination_elimination<N>> value_combination(const board &bd) {
@@ -66,7 +66,7 @@ std::string value_combination_elimination<N>::to_string() const {
         "Hidden Triple",
         "Hidden Quad"
     };
-    return std::format("{} in {}, eliminated_cells {} with values {}",
+    return fmt::format("{} in {}, eliminated_cells {} with values {}",
                        reasons[n - 1],
                        c_set.to_string(),
                        eliminated_cells.to_string(),

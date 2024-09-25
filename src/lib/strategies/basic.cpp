@@ -4,7 +4,7 @@
 
 #include "basic.hpp"
 #include "../board/cell.hpp"
-#include <format>
+#include "fmt/core.h"
 
 std::vector<basic_elimination> basic(const board &bd) {
     std::vector<basic_elimination> results;
@@ -39,7 +39,7 @@ int basic_elimination::apply(board &b) const {
 }
 
 std::string basic_elimination::to_string() const {
-    return std::format("{} in cell {}, {}, eliminated {} from cells {}",
+    return fmt::format("{} in cell {}, {}, eliminated {} from cells {}",
         eliminated_value,
         index_to_string(set_cell),
         c_set.to_string(),

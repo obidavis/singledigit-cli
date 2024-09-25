@@ -4,8 +4,7 @@
 
 #include "intersection_removal.hpp"
 
-#include <format>
-#include <sys/fcntl.h>
+#include <fmt/core.h>
 
 static void intersection_removal(std::vector<intersection_removal_elimination> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
     cell_set intersection = bd[cset1].open_cells() & bd[cset2].open_cells();
@@ -63,7 +62,7 @@ std::vector<intersection_removal_elimination> box_line_reduction(const board &bd
 }
 
 std::string intersection_removal_elimination::to_string() const {
-    return std::format("Intersection Removal: {} in {} eliminated from {}", eliminated_values.to_string(), intersection.to_string(), eliminated_cells.to_string());
+    return fmt::format("Intersection Removal: {} in {} eliminated from {}", eliminated_values.to_string(), intersection.to_string(), eliminated_cells.to_string());
 }
 
 int intersection_removal_elimination::apply(board &b) const {

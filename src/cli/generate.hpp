@@ -9,6 +9,7 @@
 #include "grader.hpp"
 
 #include <future>
+#include <fmt/core.h>
 
 struct generation_options {
     int min_difficulty;
@@ -58,7 +59,7 @@ inline auto generate(const generation_options &options) {
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = duration_cast<std::chrono::milliseconds>(end - now);
-    std::println("{} ms to join", elapsed.count());
+    fmt::println("{} ms to join", elapsed.count());
     return results;
 }
 
