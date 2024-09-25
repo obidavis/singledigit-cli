@@ -47,7 +47,7 @@ public:
         return std::nullopt;
     }
 
-    int solve() {
+    int solution_count() {
         int solution_count = 0;
         solve_backtracking(0, solution_count);
         return solution_count;
@@ -80,7 +80,9 @@ public:
                 if (solve_backtracking<stop_after_second_solution>(index, solution_count)) {
                     ++solution_count;
                     if constexpr (stop_after_second_solution) {
-                        return solution_count > 1;
+                        if (solution_count == 2) {
+                            return true;
+                        }
                     }
                 }
                 rows[next_indices->row].reset(i);
