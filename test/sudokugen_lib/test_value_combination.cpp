@@ -13,16 +13,16 @@ TEST(ValueCombinationTest, HiddenPairs) {
     /*  Sample from sudokuwiki:
      *  https://www.sudokuwiki.org/sudoku.htm?bd=4105300hg281j209i2j081381ag614j20h410hh80318412181h00581033k4109g130342gi0k86s811103m8i4igh0l85805210hla81g20550g12181500h0309090h50120654i0i081032181g10h09054111
      *  Hidden Pair
-        Hidden Pair 2/4 in Col 3, on cells [D3,E3]
+        Hidden Pair 2/4 in Col 3, on eliminated_cells [D3,E3]
         - removes 5/6 from D3
         - removes 3/6/7 from E3
-        Hidden Pair 2/4 in Box 4, on cells [D3,E3]
+        Hidden Pair 2/4 in Box 4, on eliminated_cells [D3,E3]
         - removes 5/6 from D3
         - removes 3/6/7 from E3
-        Hidden Pair 3/7 in Box 6, on cells [E7,F7]
+        Hidden Pair 3/7 in Box 6, on eliminated_cells [E7,F7]
         - removes 6/9 from E7
         - removes 1/5/9 from F7
-        Hidden Pair 3/7 in Col 7, on cells [E7,F7]
+        Hidden Pair 3/7 in Col 7, on eliminated_cells [E7,F7]
         - removes 6/9 from E7
         - removes 1/5/9 from F7
      */
