@@ -1,4 +1,4 @@
-add_executable(sudokugen main.cpp)
+add_executable(singledigit main.cpp)
 include(FetchContent)
 
 FetchContent_Declare(cxxopts
@@ -7,4 +7,4 @@ FetchContent_Declare(cxxopts
 )
 FetchContent_MakeAvailable(cxxopts)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++")
-target_link_libraries(sudokugen PRIVATE cxxopts::cxxopts sudokugen_lib)
+target_link_libraries(singledigit PRIVATE cxxopts::cxxopts singledigit_lib fmt::fmt)

@@ -3,4 +3,4 @@ add_subdirectory(googletest EXCLUDE_FROM_ALL)
 include(googletest)
 enable_testing()
 
-add_subdirectory(sudokugen_lib)
+add_subdirectory(singledigit_lib)

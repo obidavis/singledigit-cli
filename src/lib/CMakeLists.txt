@@ -1,4 +1,4 @@
-add_library(sudokugen_lib
+add_library(singledigit_lib
         board/board.cpp
         board/cell.cpp
         board/constraint_set.cpp
@@ -12,5 +12,5 @@ add_library(sudokugen_lib
         board/cell_set.cpp
         grader.cpp
         uniqueness.cpp)
-target_include_directories(sudokugen_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(sudokugen_lib fmt::fmt)
+target_include_directories(singledigit_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(singledigit_lib PRIVATE fmt)
