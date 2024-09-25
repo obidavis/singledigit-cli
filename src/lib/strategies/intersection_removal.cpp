@@ -6,7 +6,7 @@
 
 #include <fmt/core.h>
 
-static void intersection_removal(std::vector<intersection_removal_elimination> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
+static void intersection_removal(std::vector<std::unique_ptr<base_elimination>> &results, const board &bd, const constraint_set &cset1, const constraint_set &cset2) {
     cell_set intersection = bd[cset1].open_cells() & bd[cset2].open_cells();
     if (intersection.empty()) {
         return;
@@ -24,19 +24,19 @@ static void intersection_removal(std::vector<intersection_removal_elimination> &
             });
             if (!eliminated_cells.empty()) {
                 intersection_removal_elimination result = {
-                    .intersection = intersection,
-                    .eliminated_cells = eliminated_cells,
-                    .eliminated_values = value_set{value},
-                    .c_sets = {cset1, cset2}
+                    eliminated_cells,
+                    value_set{value},
+                    intersection,
+                    {cset1, cset2}
                 };
-                results.emplace_back(result);
+                results.emplace_back(std::make_unique<intersection_removal_elimination>(result));
             }
         }
     }
 }
 
-std::vector<intersection_removal_elimination> pointing_pairs_triples(const board &bd) {
-    std::vector<intersection_removal_elimination> results;
+std::vector<std::unique_ptr<base_elimination>> pointing_pairs_triples(const board &bd) {
+    std::vector<std::unique_ptr<base_elimination>> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
             intersection_removal(results, bd, box, row);
@@ -48,8 +48,8 @@ std::vector<intersection_removal_elimination> pointing_pairs_triples(const board
     return results;
 }
 
-std::vector<intersection_removal_elimination> box_line_reduction(const board &bd) {
-    std::vector<intersection_removal_elimination> results;
+std::vector<std::unique_ptr<base_elimination>> box_line_reduction(const board &bd) {
+    std::vector<std::unique_ptr<base_elimination>> results;
     for (constraint_set box : bd.boxes()) {
         for (constraint_set row : bd.rows()) {
             intersection_removal(results, bd, row, box);
@@ -63,12 +63,4 @@ std::vector<intersection_removal_elimination> box_line_reduction(const board &bd
 
 std::string intersection_removal_elimination::to_string() const {
     return fmt::format("Intersection Removal: {} in {} eliminated from {}", eliminated_values.to_string(), intersection.to_string(), eliminated_cells.to_string());
-}
-
-int intersection_removal_elimination::apply(board &b) const {
-    int total_eliminations = 0;
-    for (cell &c : b[eliminated_cells]) {
-        total_eliminations += c.remove_candidates(eliminated_values);
-    }
-    return total_eliminations;
 }

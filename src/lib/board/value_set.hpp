@@ -7,6 +7,7 @@
 #include "detail/bitset_combinations.hpp"
 
 struct value_set {
+    value_set() = default;
     value_set(std::initializer_list<int> list);
     static value_set all();
     static value_set none();

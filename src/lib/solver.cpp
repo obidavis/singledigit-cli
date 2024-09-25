@@ -9,11 +9,9 @@
 
 std::string solution_step::to_string() const {
     std::ostringstream oss;
-    std::visit([&oss](const auto &elims) {
-        for (const auto &elim : elims) {
-            oss << elim.to_string() << '\n';
-        }
-    }, eliminations);
+    for (const auto &elim : eliminations) {
+        oss << elim->to_string() << '\n';
+    }
     for (const auto &sol : solutions) {
         oss << "Solved " << sol.cell << " with " << sol.value << '\n';
     }
@@ -33,11 +31,9 @@ solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strate
         auto eliminations = strategy(bd);
         if (!empty(eliminations)) {
             result.eliminations = std::move(eliminations);
-            std::visit([&]<typename T>(const std::vector<T> &elims) {
-                for (const T &elim : elims) {
-                    result.total_eliminations += elim.apply(result.state);
-                }
-            }, result.eliminations);
+            for (const auto &elim : result.eliminations) {
+                result.total_eliminations += elim->apply(result.state);
+            }
             // for (const elimination &elimination : result.eliminations) {
             //     result.total_eliminations += std::visit([&result](const auto &elim) {
             //         return elim.apply(result.state);

@@ -6,8 +6,8 @@
 #include "../board/cell.hpp"
 #include "fmt/core.h"
 
-std::vector<basic_elimination> basic(const board &bd) {
-    std::vector<basic_elimination> results;
+std::vector<std::unique_ptr<base_elimination>> basic(const board &bd) {
+    std::vector<std::unique_ptr<base_elimination>> results;
     for (constraint_set c_set : bd.c_sets()) {
         cell_set solved_cells = bd[c_set].solved_cells();
         for (const cell &c : bd[solved_cells]) {
@@ -17,32 +17,26 @@ std::vector<basic_elimination> basic(const board &bd) {
                 return open_cell.candidates().at(value);
             });
             if (!eliminated_cells.empty()) {
+                value_set eliminated_values{value};
+                cell_index set_cell = c.index();
                 basic_elimination result = {
-                    .set_cell = c.index(),
-                    .eliminated_value = value,
-                    .eliminated_cells = eliminated_cells,
-                    .c_set = c_set
+                    eliminated_cells,
+                    eliminated_values,
+                    set_cell,
+                    c_set
                 };
-                results.emplace_back(result);
+                results.emplace_back(std::make_unique<basic_elimination>(result));
             }
         }
     }
     return results;
 }
 
-int basic_elimination::apply(board &b) const {
-    int total_eliminations = 0;
-    for (cell &cell : b[eliminated_cells]) {
-        total_eliminations += cell.remove_candidate(eliminated_value);
-    }
-    return total_eliminations;
-}
-
 std::string basic_elimination::to_string() const {
     return fmt::format("{} in cell {}, {}, eliminated {} from cells {}",
-        eliminated_value,
+        eliminated_values.first(),
         index_to_string(set_cell),
         c_set.to_string(),
-        eliminated_value,
+        eliminated_values.to_string(),
         eliminated_cells.to_string());
 }

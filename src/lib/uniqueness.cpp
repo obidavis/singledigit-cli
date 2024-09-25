@@ -3,73 +3,13 @@
 //
 
 #include <algorithm>
+#include <optional>
+#include <string>
+#include <string_view>
+#include <bitset>
 
 #include "uniqueness.hpp"
-#include "solver.hpp"
 
-#include "strategies/basic.hpp"
-#include "strategies/value_combination.hpp"
-#include "strategies/cell_combination.hpp"
-#include "board/board.hpp"
-
-template <typename T>
-static bool apply_strategy(board &bd, const std::vector<T> &elims) {
-    cell_set eliminated_cells{};
-    for (const auto &elim : elims) {
-        elim.apply(bd);
-        eliminated_cells |= elim.eliminated_cells;
-    }
-    for (cell &c : bd[eliminated_cells]) {
-        int count = c.candidates().count();
-        if (count == 0) {
-            return false;
-        }
-        if (count == 1) {
-            c.solve(c.candidates().first());
-        }
-    }
-    return true;
-}
-
-static void is_unique_backtrack(int &solution_count, board bd) { // NOLINT(*-no-recursion)
-
-    auto basic_elims = basic(bd);
-    if (!apply_strategy(bd, basic_elims)) {
-        return;
-    }
-    // if (basic_elims.empty()) {
-    //
-    // }
-    //
-    if (!bd.is_valid()) {
-        return;
-    }
-
-    if (bd.is_solved()) {
-        ++solution_count;
-        return;
-    }
-
-    auto open_cells = bd.open_cells();
-    auto open_cells_view = bd[open_cells];
-    auto next_cell_it = std::ranges::min_element(open_cells_view, [](const cell &a, const cell &b) {
-        return a.candidates().count() < b.candidates().count();
-    });
-    if (next_cell_it == open_cells_view.end()) {
-        return;
-    }
-    cell &next_cell = *next_cell_it;
-
-    value_set candidates = next_cell.candidates();
-    for (int value : candidates) {
-        next_cell.solve(value);
-        is_unique_backtrack(solution_count, bd);
-        if (solution_count > 1) {
-            return;
-        }
-        next_cell = cell(next_cell.index(), candidates);
-    }
-}
 
 class simple_board {
 public:

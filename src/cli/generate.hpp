@@ -36,7 +36,7 @@ inline auto generate(const generation_options &options) {
             auto breakdown = grade(solve_path);
             float grade = breakdown.grade();
             if (grade >= min && grade <= max) {
-                results.push_back({board{puzzle}, solve_path, breakdown});
+                results.push_back({board{puzzle}, std::move(solve_path), breakdown});
             }
         }
         return results;
@@ -55,7 +55,11 @@ inline auto generate(const generation_options &options) {
     auto now = std::chrono::high_resolution_clock::now();
     for (auto &f : futures) {
         auto res = f.get();
-        results.insert(results.end(), res.begin(), res.end());
+        results.insert(
+            results.end(),
+            std::make_move_iterator(res.begin()),
+            std::make_move_iterator(res.end())
+        );
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed = duration_cast<std::chrono::milliseconds>(end - now);

@@ -7,19 +7,43 @@
 #include <typeindex>
 #include <limits>
 
-static const std::unordered_map<std::type_index, float> scale_factors = {
-    {typeid(basic_elimination), 0.1f},
-    {typeid(naked_single_elimination), 0.1f},
-    {typeid(hidden_single_elimination), 2.0f},
-    {typeid(naked_pair_elimination), 2.0f},
-    {typeid(naked_triple_elimination), 2.0f},
-    {typeid(hidden_pair_elimination), 2.0f},
-    {typeid(hidden_triple_elimination), 2.0f},
-    {typeid(naked_quad_elimination), 5.0f},
-    {typeid(hidden_quad_elimination), 5.0f},
-    {typeid(intersection_removal_elimination), 5.0f}
-};
-
+static float get_scale_factor(const strategy_result &result) {
+    if (result.empty()) {
+        return 0.0f;
+    }
+    base_elimination *ptr = result[0].get();
+    if (dynamic_cast<basic_elimination *>(ptr)) {
+        return 0.1f;
+    }
+    if (dynamic_cast<naked_single_elimination *>(ptr)) {
+        return 0.1f;
+    }
+    if (dynamic_cast<hidden_single_elimination *>(ptr)) {
+        return 2.0f;
+    }
+    if (dynamic_cast<naked_pair_elimination *>(ptr)) {
+        return 2.0f;
+    }
+    if (dynamic_cast<hidden_pair_elimination *>(ptr)) {
+        return 2.0f;
+    }
+    if (dynamic_cast<naked_triple_elimination *>(ptr)) {
+        return 2.0f;
+    }
+    if (dynamic_cast<hidden_triple_elimination *>(ptr)) {
+        return 2.0f;
+    }
+    if (dynamic_cast<naked_quad_elimination *>(ptr)) {
+        return 5.0f;
+    }
+    if (dynamic_cast<hidden_quad_elimination *>(ptr)) {
+        return 5.0f;
+    }
+    if (dynamic_cast<intersection_removal_elimination *>(ptr)) {
+        return 5.0f;
+    }
+    throw std::invalid_argument("Unknown elimination type");
+}
 grade_breakdown grade(const std::vector<solution_step> &solution) {
     if (solution.empty()) {
         return {
@@ -32,9 +56,7 @@ grade_breakdown grade(const std::vector<solution_step> &solution) {
     float solutition_points = 0;
     float total_solutions = 0;
     for (const solution_step &step : solution) {
-        const float scale_factor = std::visit([]<typename T>(const std::vector<T> &) {
-            return scale_factors.at(typeid(T));
-        }, step.eliminations);
+        const float scale_factor = get_scale_factor(step.eliminations);
         elimination_points += step.total_eliminations * scale_factor;
         solutition_points += step.total_solutions * scale_factor;
         total_solutions += step.total_solutions;

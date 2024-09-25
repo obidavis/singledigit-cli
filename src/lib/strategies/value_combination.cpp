@@ -7,8 +7,8 @@
 #include <fmt/core.h>
 
 template <size_t N>
-static std::vector<value_combination_elimination<N>> value_combination(const board &bd) {
-    std::vector<value_combination_elimination<N>> eliminations;
+static std::vector<std::unique_ptr<base_elimination>> value_combination(const board &bd) {
+    std::vector<std::unique_ptr<base_elimination>> eliminations;
 
     for (auto c_set : bd.c_sets()) {
 
@@ -29,11 +29,12 @@ static std::vector<value_combination_elimination<N>> value_combination(const boa
                     continue;
                 }
                 value_combination_elimination<N> elim = {
-                    .eliminated_cells = cells_containing_values,
-                    .values = vs,
-                    .c_set = c_set
+                    cells_containing_values,
+                    ~vs,
+                    vs,
+                    c_set
                 };
-                eliminations.emplace_back(elim);
+                eliminations.emplace_back(std::make_unique<value_combination_elimination<N>>(elim));
             }
         }
     }
@@ -41,19 +42,19 @@ static std::vector<value_combination_elimination<N>> value_combination(const boa
 }
 
 
-std::vector<hidden_single_elimination> hidden_singles(const board &bd) {
+std::vector<std::unique_ptr<base_elimination>> hidden_singles(const board &bd) {
     return value_combination<1>(bd);
 }
 
-std::vector<hidden_pair_elimination> hidden_pairs(const board &bd) {
+std::vector<std::unique_ptr<base_elimination>> hidden_pairs(const board &bd) {
     return value_combination<2>(bd);
 }
 
-std::vector<hidden_triple_elimination> hidden_triples(const board &bd) {
+std::vector<std::unique_ptr<base_elimination>> hidden_triples(const board &bd) {
     return value_combination<3>(bd);
 }
 
-std::vector<hidden_quad_elimination> hidden_quads(const board &bd) {
+std::vector<std::unique_ptr<base_elimination>> hidden_quads(const board &bd) {
     return value_combination<4>(bd);
 }
 
@@ -71,16 +72,6 @@ std::string value_combination_elimination<N>::to_string() const {
                        c_set.to_string(),
                        eliminated_cells.to_string(),
                        values.to_string());
-}
-
-template <size_t N>
-int value_combination_elimination<N>::apply(board &b) const {
-    int total_eliminations = 0;
-    value_set values_complement = ~values;
-    for (cell &cell : b[eliminated_cells]) {
-        total_eliminations += cell.remove_candidates(values_complement);
-    }
-    return total_eliminations;
 }
 
 template struct value_combination_elimination<1>;
