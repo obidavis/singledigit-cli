@@ -22,6 +22,7 @@ struct solution_step {
     [[nodiscard]] bool made_progress() const {
         return !empty(eliminations) || !solutions.empty();
     }
+    [[nodiscard]] std::string to_string() const;
 };
 
 solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strategies);

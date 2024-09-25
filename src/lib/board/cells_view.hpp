@@ -12,10 +12,16 @@ struct cells_view {
     cells_view(CellType *cells, const cell_set &mask) : cells(cells), mask(mask) {}
 
     struct iterator {
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = CellType;
+        using difference_type = std::ptrdiff_t;
+        using pointer = CellType *;
+        using reference = CellType &;
+
         iterator() : cells{}, mask{} {}
         iterator(CellType *cells, const cell_set &mask) : cells(cells), mask(std::bit_cast<__uint128_t>(mask)) {}
 
-        CellType &operator*() {
+        CellType &operator*() const {
             int index = std::countr_zero(mask);
             return cells[index];
         }
@@ -88,5 +94,8 @@ private:
 
 cells_view(const cell *cells, const cell_set &mask) -> cells_view<const cell>;
 cells_view(cell *cells, const cell_set &mask) -> cells_view<cell>;
+
+static_assert(std::ranges::input_range<cells_view<cell>>);
+static_assert(std::ranges::input_range<cells_view<const cell>>);
 
 #endif //CELLS_VIEW_HPP

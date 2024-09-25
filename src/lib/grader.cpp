@@ -20,6 +20,13 @@ static const std::unordered_map<std::type_index, float> scale_factors = {
 };
 
 grade_breakdown grade(const std::vector<solution_step> &solution) {
+    if (solution.empty()) {
+        return {
+            .elimination_points = std::numeric_limits<float>::infinity(),
+            .solution_points = std::numeric_limits<float>::infinity(),
+            .average_solutions_per_step = 0
+        };
+    }
     float elimination_points = 0;
     float solutition_points = 0;
     float total_solutions = 0;

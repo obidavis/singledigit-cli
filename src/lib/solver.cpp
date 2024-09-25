@@ -5,6 +5,20 @@
 #include "solver.hpp"
 #include "strategies/basic.hpp"
 #include <algorithm>
+#include <sstream>
+
+std::string solution_step::to_string() const {
+    std::ostringstream oss;
+    std::visit([&oss](const auto &elims) {
+        for (const auto &elim : elims) {
+            oss << elim.to_string() << '\n';
+        }
+    }, eliminations);
+    for (const auto &sol : solutions) {
+        oss << "Solved " << sol.cell << " with " << sol.value << '\n';
+    }
+    return oss.str();
+}
 
 solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {
     solution_step result = {

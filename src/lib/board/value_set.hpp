@@ -42,6 +42,43 @@ struct value_set {
             return value_set{bs};
         });
     }
+
+    struct iterator {
+
+        int operator*() const {
+            return std::countr_zero(values);
+        }
+
+        iterator &operator++() {
+            values &= values - 1;
+            return *this;
+        }
+
+        iterator operator++(int) {
+            auto copy = *this;
+            ++*this;
+            return copy;
+        }
+
+        bool operator==(const iterator &rhs) const {
+            return values == rhs.values;
+        }
+
+        bool operator!=(const iterator &rhs) const {
+            return values != rhs.values;
+        }
+
+        unsigned long values;
+    };
+
+    iterator begin() {
+        return {values.to_ulong() };
+    }
+
+    iterator end() {
+        return {0ul};
+    }
+
 private:
     value_set(std::bitset<10> values) : values(values) {}
     std::bitset<10> values;

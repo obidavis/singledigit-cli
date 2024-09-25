@@ -10,5 +10,6 @@ add_library(sudokugen_lib
         solver.cpp
         generator.cpp
         board/cell_set.cpp
-        grader.cpp)
+        grader.cpp
+        uniqueness.cpp)
 target_include_directories(sudokugen_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

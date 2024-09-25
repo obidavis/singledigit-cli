@@ -45,14 +45,22 @@ public:
     [[nodiscard]] constraint_set col(int index) const;
     [[nodiscard]] constraint_set box(int index) const;
 
-    [[nodiscard]] std::array<constraint_set, 9> rows() const;
-    [[nodiscard]] std::array<constraint_set, 9> cols() const;
-    [[nodiscard]] std::array<constraint_set, 9> boxes() const;
-    [[nodiscard]] std::array<constraint_set, 27> c_sets() const;
+    [[nodiscard]] std::span<const constraint_set, 9> rows() const {
+        return std::span<const constraint_set, 9>{_c_sets.data(), 9};
+    }
+    [[nodiscard]] std::span<const constraint_set, 9> cols() const {
+        return std::span<const constraint_set, 9>{_c_sets.data() + 9, 9};
+    }
+    [[nodiscard]] std::span<const constraint_set, 9> boxes() const {
+        return std::span<const constraint_set, 9>{_c_sets.data() + 18, 9};
+    }
+    [[nodiscard]] std::span<const constraint_set, 27> c_sets() const {
+        return _c_sets;
+    }
 
 private:
     std::array<cell, 81> _cells;
+    std::array<constraint_set, 27> _c_sets;
 };
-
 
 #endif //BOARD_HPP

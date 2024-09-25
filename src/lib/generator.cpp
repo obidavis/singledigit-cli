@@ -11,6 +11,7 @@
 #include <ranges>
 
 #include "solver.hpp"
+#include "uniqueness.hpp"
 
 static constexpr auto default_board_str =
     "123456789"
@@ -189,7 +190,7 @@ static void safely_remove(std::string &bd, const std::vector<std::array<int, N>>
             bd[index_group[i]] = '0';
         }
 
-        if (!is_solvable(bd)) {
+        if (!is_unique(bd)) {
             for (int i = 0; i < N; ++i) {
                 bd[index_group[i]] = copy[i];
             }
@@ -197,7 +198,7 @@ static void safely_remove(std::string &bd, const std::vector<std::array<int, N>>
     }
 }
 
-std::string puzzle_generator::generate(std::string_view solution) {
+std::string puzzle_generator::generate_puzzle(std::string_view solution) {
     std::string board_str(solution);
 
     std::vector quads = generate_quads();
@@ -211,6 +212,20 @@ std::string puzzle_generator::generate(std::string_view solution) {
     std::vector singles = generate_singles(board_str);
     std::ranges::shuffle(singles, gen);
     safely_remove(board_str, singles, 60);
+
+    return board_str;
+}
+
+std::string puzzle_generator::generate_solution() {
+    std::string board_str = default_board_str;
+
+    for (int i = 0; i < 3; ++i) {
+        swap_rows(board_str, i, gen);
+        swap_columns(board_str, i, gen);
+    }
+    swap_row_blocks(board_str, gen);
+    swap_column_blocks(board_str, gen);
+    permute_numbers(board_str, gen);
 
     return board_str;
 }

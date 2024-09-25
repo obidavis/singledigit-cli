@@ -53,6 +53,11 @@ public:
         return cell_set{mask & ~rhs.mask};
     }
 
+    cell_set &operator|=(const cell_set &rhs) {
+        mask |= rhs.mask;
+        return *this;
+    }
+
     friend auto combinations(const cell_set &cs, int n) {
         return std::views::transform(bitset_combinations_view<81>(cs.mask, n), [](auto &&bs) {
             return cell_set{bs};

@@ -13,7 +13,8 @@ std::string generate_complete_board(int seed);
 class puzzle_generator {
 public:
     explicit puzzle_generator(int seed) : gen(seed) {}
-    std::string generate(std::string_view solution);
+    std::string generate_puzzle(std::string_view solution);
+    std::string generate_solution();
 private:
     std::mt19937 gen;
 };

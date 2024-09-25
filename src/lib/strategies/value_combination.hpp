@@ -10,7 +10,7 @@
 
 template <size_t N>
 struct value_combination_elimination {
-    cell_set cells;
+    cell_set eliminated_cells;
     value_set values;
     constraint_set c_set;
     [[nodiscard]] std::string to_string() const;
