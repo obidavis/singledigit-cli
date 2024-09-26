@@ -19,12 +19,12 @@ using strategy_fn = strategy_result (*)(const board&);
 static const std::vector all_strategies = {
     basic,
     naked_singles,
+    hidden_singles,
     naked_pairs,
     naked_triples,
-    naked_quads,
-    hidden_singles,
     hidden_pairs,
     hidden_triples,
+    naked_quads,
     hidden_quads,
     pointing_pairs_triples,
     box_line_reduction
