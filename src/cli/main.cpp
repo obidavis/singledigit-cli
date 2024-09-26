@@ -5,6 +5,8 @@
 #include "cxxopts.hpp"
 #include "generate.hpp"
 #include "output.hpp"
+#include "json.hpp"
+#include <nlohmann/json.hpp>
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
@@ -85,16 +87,22 @@ int main(int argc, char **argv) {
                 .threads = result["threads"].as<int>()
             });
             auto elapsed = duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now);
-            for (int i = 0; i < generated.size(); ++i) {
-                fmt::println("------ Sudoku {} ------", i + 1);
-                fmt::println("Clues:       {}", generated[i].clues);
-                fmt::println("Solution:    {}", generated[i].solution);
-                fmt::println("Difficulty:  {:.0f}", generated[i].difficulty);
-                if (result["full-solution"].as<bool>()) {
-                    fmt::println("Solve Path:");
-                    print_solution_path_plain(generated[i].solve_path);
+            if (result["output"].as<std::string>() == "json") {
+                nlohmann::json j = {{"puzzles", generated}};
+                fmt::print(std::cout, "{}\n", j.dump(2));
+            } else if (result["output"].as<std::string>() == "plain") {
+                for (int i = 0; i < generated.size(); ++i) {
+                    fmt::println("------ Sudoku {} ------", i + 1);
+                    fmt::println("Clues:       {}", generated[i].clues);
+                    fmt::println("Solution:    {}", generated[i].solution);
+                    fmt::println("Difficulty:  {:.0f}", generated[i].difficulty);
+                    if (result["full-solution"].as<bool>()) {
+                        fmt::println("Solve Path:");
+                        print_solution_path_plain(generated[i].solve_path);
+                    }
+                    std::cout << std::endl;
                 }
-                std::cout << std::endl;
+
             }
             fmt::print(std::clog, "Generated {} puzzles in {} ms\n", generated.size(), elapsed.count());
         } else if (verb == "solve") {
