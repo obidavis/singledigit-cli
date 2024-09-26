@@ -4,24 +4,26 @@
 
 #include "cxxopts.hpp"
 #include "generate.hpp"
-#include "solve.hpp"
+#include "output.hpp"
+
 #include <fmt/core.h>
+#include <fmt/ostream.h>
 #include <chrono>
 #include <iostream>
 
-std::pair<int, int> parse_difficulty(std::string_view diff) {
+std::pair<float, float> parse_difficulty(std::string_view diff) {
     if (diff == "kids") {
         return {0, 25};
     } else if (diff == "easy") {
         return {25, 75};
     } else if (diff == "moderate") {
-        return {75, 125};
+        return {75, 100};
     } else if (diff == "tough") {
-        return {125, 200};
+        return {100, 200};
     } else if (diff == "hard") {
-        return {200, std::numeric_limits<int>::max()};
+        return {200, std::numeric_limits<float>::infinity()};
     } else if (diff == "any"){
-        return {std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
+        return {0, std::numeric_limits<float>::infinity()};
     } else {
         throw std::invalid_argument("Invalid difficulty: " + std::string(diff));
     }
@@ -69,6 +71,11 @@ int main(int argc, char **argv) {
                 : std::random_device{}();
 
             auto [min_difficulty, max_difficulty] = parse_difficulty(result["difficulty"].as<std::string>());
+            fmt::print(std::clog, "Generating {} puzzles\n", result["count"].as<int>());
+            fmt::print(std::clog, "Difficulty: {} - {}\n", min_difficulty, max_difficulty);
+            fmt::print(std::clog, "Seed: {}\n", seed);
+            fmt::print(std::clog, "Threads: {}\n", result["threads"].as<int>());
+
             auto now = std::chrono::high_resolution_clock::now();
             std::vector generated = generate({
                 .min_difficulty = min_difficulty,
@@ -78,26 +85,33 @@ int main(int argc, char **argv) {
                 .threads = result["threads"].as<int>()
             });
             auto elapsed = duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now);
-            for (const auto &puzzle : generated) {
-                fmt::println("{}", puzzle.puzzle.to_short_string());
-                fmt::println("\t Difficulty: {}", puzzle.breakdown.grade());
+            for (int i = 0; i < generated.size(); ++i) {
+                fmt::println("------ Sudoku {} ------", i + 1);
+                fmt::println("Clues:       {}", generated[i].clues);
+                fmt::println("Solution:    {}", generated[i].solution);
+                fmt::println("Difficulty:  {:.0f}", generated[i].difficulty);
+                if (result["full-solution"].as<bool>()) {
+                    fmt::println("Solve Path:");
+                    print_solution_path_plain(generated[i].solve_path);
+                }
+                std::cout << std::endl;
             }
-            fmt::println("Generated {} puzzles in {}ms", generated.size(), elapsed.count());
+            fmt::print(std::clog, "Generated {} puzzles in {} ms\n", generated.size(), elapsed.count());
         } else if (verb == "solve") {
             if (!result.count("puzzle")) {
                 std::cerr << "Puzzle must be specified for solve\n";
                 return 1;
             }
-            std::string puzzle = result["puzzle"].as<std::string>();
-            if (!validate_puzzle_str(puzzle)) {
-                std::cerr << "Invalid puzzle: " << puzzle << "\n";
+            std::string puzzle_str = result["puzzle"].as<std::string>();
+            try {
+                board bd(puzzle_str);
+                std::vector<solution_step> solution_steps = solve(bd, all_strategies);
+                print_solution_path_plain(solution_steps);
+                return 0;
+            } catch (const std::exception &e) {
+                std::cerr << "Invalid puzzle: " << e.what() << "\n";
                 return 1;
             }
-            auto solution = solve(puzzle);
-            for (const auto &step : solution) {
-                fmt::println("{}", step.to_string());
-            }
-            return 0;
         } else {
             std::cerr << "Unknown action: " << verb << "\n";
             return 1;

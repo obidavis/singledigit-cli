@@ -18,7 +18,8 @@ struct solution_step {
     int total_eliminations;
     std::vector<cell_solution> solutions;
     int total_solutions;
-    board state;
+    board starting_position;
+    board ending_position;
     [[nodiscard]] bool made_progress() const {
         return !empty(eliminations) || !solutions.empty();
     }

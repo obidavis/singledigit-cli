@@ -3,7 +3,8 @@
 
 #include <string_view>
 #include <string>
-#include <array>
+#include <vector>
+#include <bitset>
 
 #include "cell.hpp"
 #include "cell_set.hpp"
@@ -59,8 +60,9 @@ public:
     }
 
 private:
-    std::array<cell, 81> _cells;
-    std::array<constraint_set, 27> _c_sets;
+    std::vector<cell> _cells;
+    std::bitset<81> _clue_flags;
+    static std::array<constraint_set, 27> _c_sets;
 };
 
 #endif //BOARD_HPP
