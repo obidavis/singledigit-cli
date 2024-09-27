@@ -21,7 +21,7 @@ struct solution_step {
     board starting_position;
     board ending_position;
     [[nodiscard]] bool made_progress() const {
-        return !empty(eliminations) || !solutions.empty();
+        return !eliminations.empty() || !solutions.empty();
     }
     [[nodiscard]] std::string to_string() const;
 };
