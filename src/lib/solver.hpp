@@ -14,6 +14,7 @@ struct cell_solution {
 };
 
 struct solution_step {
+    std::string strategy_name;
     strategy_result eliminations;
     int total_eliminations;
     std::vector<cell_solution> solutions;

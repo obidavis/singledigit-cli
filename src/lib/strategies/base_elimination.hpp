@@ -22,6 +22,7 @@ struct base_elimination {
         return total_eliminations;
     }
     [[nodiscard]] virtual std::string to_string() const = 0;
+    [[nodiscard]] virtual std::string name() const = 0;
     virtual ~base_elimination() = default;
 };
 

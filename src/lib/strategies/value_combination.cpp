@@ -30,7 +30,7 @@ static std::vector<std::unique_ptr<base_elimination>> value_combination(const bo
                 }
                 value_combination_elimination<N> elim = {
                     cells_containing_values,
-                    ~vs,
+                    eliminated_values,
                     vs,
                     c_set
                 };
@@ -60,18 +60,28 @@ std::vector<std::unique_ptr<base_elimination>> hidden_quads(const board &bd) {
 
 template <size_t N>
 std::string value_combination_elimination<N>::to_string() const {
-    size_t n = eliminated_cells.count();
-    static constexpr std::string_view reasons[] = {
-        "Hidden Single",
-        "Hidden Pair",
-        "Hidden Triple",
-        "Hidden Quad"
-    };
-    return fmt::format("{} in {}, eliminated_cells {} with values {}",
-                       reasons[n - 1],
+    return fmt::format("{} with {} found in {}, cells {}",
+                       name(),
+                       values.to_string(),
                        c_set.to_string(),
-                       eliminated_cells.to_string(),
-                       values.to_string());
+                       eliminated_cells.to_string());
+
+
+}
+
+template<size_t N>
+std::string value_combination_elimination<N>::name() const {
+    if constexpr (N == 1) {
+        return "Hidden Single";
+    } else if constexpr (N == 2) {
+        return "Hidden Pair";
+    } else if constexpr (N == 3) {
+        return "Hidden Triple";
+    } else if constexpr (N == 4) {
+        return "Hidden Quad";
+    } else {
+        return "Hidden N-Tuple";
+    }
 }
 
 template struct value_combination_elimination<1>;

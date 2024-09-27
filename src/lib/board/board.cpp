@@ -154,6 +154,18 @@ cell_set board::open_cells() const {
     }();
 }
 
+cell_set board::solved_cells() const {
+    return [this]() {
+        cell_set result;
+        for (int i = 0; i < 81; i++) {
+            if (_cells[i].is_solved()) {
+                result.set(i, true);
+            }
+        }
+        return result;
+    }();
+}
+
 constraint_set board::row(int index) const {
     return {constraint_set_type::row, index - 1};
 }

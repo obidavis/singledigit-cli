@@ -18,7 +18,6 @@ using strategy_fn = strategy_result (*)(const board&);
 
 static const std::vector all_strategies = {
     basic,
-    naked_singles,
     hidden_singles,
     naked_pairs,
     naked_triples,

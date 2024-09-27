@@ -18,6 +18,7 @@ struct cell_combination_elimination : base_elimination {
     cell_set cells;
     constraint_set c_set;
     [[nodiscard]] std::string to_string() const override;
+    [[nodiscard]] std::string name() const override;
 };
 
 std::vector<std::unique_ptr<base_elimination>> naked_singles(const board &bd);

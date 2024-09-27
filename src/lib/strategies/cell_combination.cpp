@@ -71,6 +71,22 @@ std::string cell_combination_elimination<N>::to_string() const {
                        eliminated_values.to_string());
 }
 
+template<size_t N>
+std::string cell_combination_elimination<N>::name() const {
+    if constexpr (N == 1) {
+        return "Naked Single";
+    } else if constexpr (N == 2) {
+        return "Naked Pair";
+    } else if constexpr (N == 3) {
+        return "Naked Triple";
+    } else if constexpr (N == 4) {
+        return "Naked Quad";
+    } else {
+        return "Naked N-Tuple";
+    }
+}
+
+
 template struct cell_combination_elimination<1>;
 template struct cell_combination_elimination<2>;
 template struct cell_combination_elimination<3>;

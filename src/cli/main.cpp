@@ -36,86 +36,108 @@ int main(int argc, char **argv) {
     options.add_options()
         ("h, help", "Print help")
         ("v, verb", "CLI Action (solve, generate)", cxxopts::value<std::string>())
-        ("p, puzzle", "Puzzle to solve", cxxopts::value<std::string>())
-        ("o, output", "Output format (plain, json)", cxxopts::value<std::string>()->default_value("plain"))
-        ("f, full-solution", "Output full solution", cxxopts::value<bool>()->default_value("false"))
+        ("puzzle", "Puzzle to solve", cxxopts::value<std::string>())
+        ("f, format", "Output format (plain, json)", cxxopts::value<std::string>()->default_value("plain"))
+        ("i, indent", "Indentation level for JSON output (-1 for unformatted)", cxxopts::value<int>()->default_value("2"))
+        ("p, solve-path", "Output solve path for generated puzzles", cxxopts::value<bool>()->default_value("false"))
         ("s, seed", "Random seed (omit for random device)", cxxopts::value<unsigned int>())
-        ("c, count", "Number of puzzles to generate_puzzle", cxxopts::value<int>()->default_value("1"))
+        ("c, count", "Number of puzzles to generate", cxxopts::value<int>()->default_value("1"))
         ("d, difficulty", "Difficulty of generated puzzles", cxxopts::value<std::string>()->default_value("any"))
-        ("S, solution", "Solution to generate_puzzle puzzles for", cxxopts::value<std::string>())
-        ("V, verbose", "Print additional information", cxxopts::value<bool>()->default_value("false"))
-        ("j, threads", "Concurrency", cxxopts::value<int>()->default_value("1"));
+        ("j, threads", "Concurrency", cxxopts::value<int>()->default_value("1"))
+        ("S, single-step", "Output just the first step of the solution", cxxopts::value<bool>()->default_value("false"));
 
     try {
         options.parse_positional({"verb", "puzzle"});
 
-        auto result = options.parse(argc, argv);
+        auto parsed_options = options.parse(argc, argv);
 
-        if (result.count("help")) {
+        if (parsed_options.count("help")) {
             fmt::println("{}", options.help());
             return 0;
         }
 
-        if (!result.count("verb")) {
+        if (!parsed_options.count("verb")) {
             std::cerr << "No action specified\n";
             return 1;
         }
 
-        std::string verb = result["verb"].as<std::string>();
+        std::string verb = parsed_options["verb"].as<std::string>();
 
         if (verb == "generate") {
-            if (result.count("puzzle")) {
+            if (parsed_options.count("puzzle")) {
                 std::cerr << "Puzzle should not be specified for generate\n";
                 return 1;
             }
-            unsigned seed = result.count("seed")
-                ? result["seed"].as<unsigned>()
+            unsigned seed = parsed_options.count("seed")
+                ? parsed_options["seed"].as<unsigned>()
                 : std::random_device{}();
 
-            auto [min_difficulty, max_difficulty] = parse_difficulty(result["difficulty"].as<std::string>());
-            fmt::print(std::clog, "Generating {} puzzles\n", result["count"].as<int>());
+            auto [min_difficulty, max_difficulty] = parse_difficulty(parsed_options["difficulty"].as<std::string>());
+            fmt::print(std::clog, "Generating {} puzzles\n", parsed_options["count"].as<int>());
             fmt::print(std::clog, "Difficulty: {} - {}\n", min_difficulty, max_difficulty);
             fmt::print(std::clog, "Seed: {}\n", seed);
-            fmt::print(std::clog, "Threads: {}\n", result["threads"].as<int>());
+            fmt::print(std::clog, "Threads: {}\n", parsed_options["threads"].as<int>());
 
             auto now = std::chrono::high_resolution_clock::now();
-            std::vector generated = generate({
+            std::vector generated_puzzles = generate({
                 .min_difficulty = min_difficulty,
                 .max_difficulty = max_difficulty,
                 .seed = seed,
-                .num_puzzles = result["count"].as<int>(),
-                .threads = result["threads"].as<int>()
+                .num_puzzles = parsed_options["count"].as<int>(),
+                .threads = parsed_options["threads"].as<int>()
             });
             auto elapsed = duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now);
-            if (result["output"].as<std::string>() == "json") {
-                nlohmann::json j = {{"puzzles", generated}};
-                fmt::print(std::cout, "{}\n", j.dump(2));
-            } else if (result["output"].as<std::string>() == "plain") {
-                for (int i = 0; i < generated.size(); ++i) {
+            if (parsed_options["format"].as<std::string>() == "json") {
+                nlohmann::json j = {{"puzzles", nlohmann::json::array()}};
+                for (const auto & puzzle: generated_puzzles) {
+                    j["puzzles"].push_back(puzzle);
+                    if (parsed_options["solve-path"].as<bool>()) {
+                        j["puzzles"].back()["solve_path"] = puzzle.solve_path;
+                    }
+                }
+                std::cout << j.dump(parsed_options["indent"].as<int>()) << std::endl;
+            } else if (parsed_options["format"].as<std::string>() == "plain") {
+                for (int i = 0; i < generated_puzzles.size(); ++i) {
                     fmt::println("------ Sudoku {} ------", i + 1);
-                    fmt::println("Clues:       {}", generated[i].clues);
-                    fmt::println("Solution:    {}", generated[i].solution);
-                    fmt::println("Difficulty:  {:.0f}", generated[i].difficulty);
-                    if (result["full-solution"].as<bool>()) {
+                    fmt::println("Clues:       {}", generated_puzzles[i].clues);
+                    fmt::println("Solution:    {}", generated_puzzles[i].solution);
+                    fmt::println("Difficulty:  {:.0f}", generated_puzzles[i].difficulty);
+                    if (parsed_options["solve-path"].as<bool>()) {
                         fmt::println("Solve Path:");
-                        print_solution_path_plain(generated[i].solve_path);
+                        print_solution_path_plain(generated_puzzles[i].solve_path);
                     }
                     std::cout << std::endl;
                 }
-
             }
-            fmt::print(std::clog, "Generated {} puzzles in {} ms\n", generated.size(), elapsed.count());
+            fmt::print(std::clog, "Generated {} puzzles in {} ms\n", generated_puzzles.size(), elapsed.count());
         } else if (verb == "solve") {
-            if (!result.count("puzzle")) {
+            if (!parsed_options.count("puzzle")) {
                 std::cerr << "Puzzle must be specified for solve\n";
                 return 1;
             }
-            std::string puzzle_str = result["puzzle"].as<std::string>();
+            std::string puzzle_str = parsed_options["puzzle"].as<std::string>();
             try {
                 board bd(puzzle_str);
-                std::vector<solution_step> solution_steps = solve(bd, all_strategies);
-                print_solution_path_plain(solution_steps);
-                return 0;
+                if (parsed_options["single-step"].as<bool>()) {
+                    solution_step step = solve_step(bd, all_strategies);
+                    if (parsed_options["format"].as<std::string>() == "json") {
+                        nlohmann::json j = {{"solvePath", {step}}};
+                        std::cout << j.dump(parsed_options["indent"].as<int>()) << std::endl;
+                    } else if (parsed_options["format"].as<std::string>() == "plain") {
+                        print_solution_step_plain(step);
+                    }
+                } else {
+                    std::vector<solution_step> solution_steps = solve(bd, all_strategies);
+                    if (parsed_options["format"].as<std::string>() == "json") {
+                        nlohmann::json j = {
+                            {"solvePath", solution_steps},
+                            {"solution", solution_steps.back().ending_position.to_short_string()},
+                        };
+                        std::cout << j.dump(parsed_options["indent"].as<int>()) << std::endl;
+                    } else if (parsed_options["format"].as<std::string>() == "plain") {
+                        print_solution_path_plain(solution_steps);
+                    }
+                }
             } catch (const std::exception &e) {
                 std::cerr << "Invalid puzzle: " << e.what() << "\n";
                 return 1;

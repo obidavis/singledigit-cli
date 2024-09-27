@@ -20,6 +20,7 @@ std::string solution_step::to_string() const {
 
 solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strategies) {
     solution_step result = {
+        .strategy_name = "Hidden Singles",
         .eliminations = {},
         .total_eliminations = 0,
         .solutions = {},
@@ -30,19 +31,21 @@ solution_step solve_step(const board &bd, const std::vector<strategy_fn> &strate
 
     for (strategy_fn strategy : strategies) {
         auto eliminations = strategy(bd);
-        if (!empty(eliminations)) {
+        if (!eliminations.empty()) {
             result.eliminations = std::move(eliminations);
             for (const auto &elim : result.eliminations) {
                 result.total_eliminations += elim->apply(result.ending_position);
             }
+            result.strategy_name = result.eliminations.front()->name();
             break;
         }
     }
 
     for (auto i = cell_index{0}; i < 81; i = cell_index{i + 1}) {
-        if (!bd[i].is_solved() && bd[i].candidates().count() == 1) {
-            result.solutions.push_back({i, bd[i].candidates().first()});
-            result.ending_position[i].solve(bd[i].candidates().first());
+        cell &c = result.ending_position[i];
+        if (!c.is_solved() && c.candidates().count() == 1) {
+            result.solutions.push_back({i, c.candidates().first()});
+            result.ending_position[i].solve(c.candidates().first());
             ++result.total_solutions;
         }
     }

@@ -17,6 +17,7 @@ struct value_combination_elimination : base_elimination {
     value_set values;
     constraint_set c_set;
     [[nodiscard]] std::string to_string() const override;
+    [[nodiscard]] std::string name() const override;
 };
 
 std::vector<std::unique_ptr<base_elimination>> hidden_singles(const board &bd);

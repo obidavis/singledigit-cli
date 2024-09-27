@@ -41,18 +41,16 @@ value_set value_set::from_uint(uint32_t v) {
 
 std::string value_set::to_string() const {
     std::ostringstream oss;
-    oss << "{";
     bool first = true;
     for (size_t i = 0; i < 10; ++i) {
         if (at(i)) {
             if (!first) {
-                oss << ", ";
+                oss << '/';
             }
             oss << i;
             first = false;
         }
     }
-    oss << "}";
     return oss.str();
 }
 
