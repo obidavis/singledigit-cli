@@ -7,8 +7,20 @@
 
 #include <random>
 #include <string>
+#include <mutex>
 
-std::string generate_complete_board(int seed);
+class thread_safe_seed_generator {
+public:
+    explicit thread_safe_seed_generator(unsigned int seed) : gen(seed) {}
+    unsigned int operator()() {
+        std::lock_guard lock(mutex);
+        std::uniform_int_distribution<unsigned int> dist;
+        return dist(gen);
+    }
+private:
+    std::mt19937 gen;
+    std::mutex mutex;
+};
 
 class puzzle_generator {
 public:
