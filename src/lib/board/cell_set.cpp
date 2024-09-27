@@ -9,13 +9,15 @@
 std::string cell_set::to_string() const {
     std::ostringstream oss;
     oss << '[';
+    bool first = true;
     for (int i = 0; i < 81; ++i) {
         if (mask.test(i)) {
-            oss << index_to_string(cell_index{i}) << ", ";
+            if (!first) {
+                oss << ", ";
+            }
+            oss << index_to_string(cell_index{i});
+            first = false;
         }
-    }
-    if (mask.any()) {
-        oss.seekp(-2, std::ios_base::end);
     }
     oss << ']';
     return oss.str();
