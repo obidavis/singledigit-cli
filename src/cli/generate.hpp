@@ -9,6 +9,7 @@
 #include "grader.hpp"
 
 #include <future>
+#include <mutex>
 
 struct generation_options {
     float min_difficulty;
@@ -23,6 +24,20 @@ struct generation_result {
     std::string solution;
     std::vector<solution_step> solve_path;
     float difficulty;
+};
+
+
+class thread_safe_seed_generator {
+public:
+    explicit thread_safe_seed_generator(unsigned int seed) : gen(seed) {}
+    unsigned int operator()() {
+        std::lock_guard lock(mutex);
+        std::uniform_int_distribution<unsigned int> dist;
+        return dist(gen);
+    }
+private:
+    std::mt19937 gen;
+    std::mutex mutex;
 };
 
 inline auto generate(const generation_options &options) {

@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
                 for (const auto & puzzle: generated_puzzles) {
                     j["puzzles"].push_back(puzzle);
                     if (parsed_options["solve-path"].as<bool>()) {
-                        j["puzzles"].back()["solve_path"] = puzzle.solve_path;
+                        j["puzzles"].back()["solvePath"] = puzzle.solve_path;
                     }
                 }
                 std::cout << j.dump(parsed_options["indent"].as<int>()) << std::endl;
