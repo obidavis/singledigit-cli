@@ -87,6 +87,17 @@ struct cells_view {
         return result;
     }
 
+    [[nodiscard]] cell_set containing(value_set vs) {
+        return where([vs](const cell &c) {
+            return (c.candidates() & vs) == vs;
+        });
+    }
+
+    [[nodiscard]] cell_set containing(int value) {
+        return where([value](const cell &c) {
+            return c.candidates().at(value);
+        });
+    }
 private:
     CellType *cells;
     cell_set mask;

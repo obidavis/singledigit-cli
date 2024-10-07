@@ -7,6 +7,7 @@ add_library(singledigit_lib
         strategies/cell_combination.cpp
         strategies/intersection_removal.cpp
         strategies/value_combination.cpp
+        strategies/fish.cpp
         solver.cpp
         generator.cpp
         board/cell_set.cpp

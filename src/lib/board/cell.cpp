@@ -16,7 +16,10 @@ int cell::value() const {
 }
 
 value_set cell::candidates() const {
-    assert(!is_solved());
+    // assert(!is_solved());
+    if (is_solved()) {
+        return value_set::none();
+    }
     return _candidates;
 }
 

@@ -42,6 +42,12 @@ static float get_scale_factor(const strategy_result &result) {
     if (dynamic_cast<intersection_removal_elimination *>(ptr)) {
         return 5.0f;
     }
+    if (dynamic_cast<fish_elimination<2> *>(ptr)) {
+        return 25.0f;
+    }
+    if (dynamic_cast<fish_elimination<3> *>(ptr)) {
+        return 50.0f;
+    }
     throw std::invalid_argument("Unknown elimination type");
 }
 grade_breakdown grade(const std::vector<solution_step> &solution) {

@@ -12,6 +12,7 @@
 #include "cell_combination.hpp"
 #include "value_combination.hpp"
 #include "intersection_removal.hpp"
+#include "fish.hpp"
 
 using strategy_result = std::vector<std::unique_ptr<base_elimination>>;
 using strategy_fn = strategy_result (*)(const board&);
@@ -26,7 +27,9 @@ static const std::vector all_strategies = {
     naked_quads,
     hidden_quads,
     pointing_pairs_triples,
-    box_line_reduction
+    box_line_reduction,
+    x_wing,
+    swordfish,
 };
 
 #endif //ELIMINATION_RESULT_HPP

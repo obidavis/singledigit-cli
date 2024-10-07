@@ -23,7 +23,7 @@ std::pair<float, float> parse_difficulty(std::string_view diff) {
     } else if (diff == "tough") {
         return {100, 200};
     } else if (diff == "hard") {
-        return {200, std::numeric_limits<float>::infinity()};
+        return {200, 1000};
     } else if (diff == "any"){
         return {0, std::numeric_limits<float>::infinity()};
     } else {

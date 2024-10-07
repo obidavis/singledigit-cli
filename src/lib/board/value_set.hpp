@@ -36,7 +36,7 @@ struct value_set {
     value_set &operator-=(const value_set &rhs);
     value_set &operator^=(const value_set &rhs);
 
-    [[nodiscard]] operator bool() const;
+    [[nodiscard]] explicit operator bool() const;
 
     friend auto combinations(const value_set &vs, int n) {
         return std::views::transform(bitset_combinations_view<10>(vs.values, n), [](auto &&bs) {

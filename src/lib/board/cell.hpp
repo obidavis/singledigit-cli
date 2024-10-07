@@ -35,8 +35,8 @@ struct cell {
 
     [[nodiscard]] cell_index index() const;
 private:
-    cell_index _index;
     value_set _candidates;
+    cell_index _index;
     bool _solved;
 };
 
