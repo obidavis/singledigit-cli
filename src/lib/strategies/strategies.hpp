@@ -17,6 +17,21 @@
 using strategy_result = std::vector<std::unique_ptr<base_elimination>>;
 using strategy_fn = strategy_result (*)(const board&);
 
+enum class strategy_type {
+    basic,
+    hidden_singles,
+    naked_pairs,
+    naked_triples,
+    hidden_pairs,
+    hidden_triples,
+    naked_quads,
+    hidden_quads,
+    pointing_pairs_triples,
+    box_line_reduction,
+    x_wing,
+    swordfish,
+};
+
 static const std::vector all_strategies = {
     basic,
     hidden_singles,

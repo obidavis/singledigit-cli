@@ -11,7 +11,12 @@ FetchContent_Declare(cxxopts
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
+FetchContent_Declare(magic_enum
+    GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
+    GIT_TAG v0.9.6
+)
+FetchContent_MakeAvailable(magic_enum)
 
 FetchContent_MakeAvailable(cxxopts)
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++")
-target_link_libraries(singledigit PRIVATE cxxopts::cxxopts singledigit_lib fmt::fmt nlohmann_json::nlohmann_json)
+target_link_libraries(singledigit PRIVATE cxxopts::cxxopts singledigit_lib fmt::fmt nlohmann_json::nlohmann_json magic_enum::magic_enum)

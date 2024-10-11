@@ -7,6 +7,8 @@
 #include "output.hpp"
 #include "json.hpp"
 #include <nlohmann/json.hpp>
+#include <magic_enum.hpp>
+
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
@@ -44,7 +46,8 @@ int main(int argc, char **argv) {
         ("c, count", "Number of puzzles to generate", cxxopts::value<int>()->default_value("1"))
         ("d, difficulty", "Difficulty of generated puzzles", cxxopts::value<std::string>()->default_value("any"))
         ("j, threads", "Concurrency", cxxopts::value<int>()->default_value("1"))
-        ("S, single-step", "Output just the first step of the solution", cxxopts::value<bool>()->default_value("false"));
+        ("S, single-step", "Output just the first step of the solution", cxxopts::value<bool>()->default_value("false"))
+        ("l, strategy-list", "Strategies to use in generation", cxxopts::value<std::vector<std::string>>());
 
     try {
         options.parse_positional({"verb", "puzzle"});
@@ -72,6 +75,29 @@ int main(int argc, char **argv) {
                 ? parsed_options["seed"].as<unsigned>()
                 : std::random_device{}();
 
+            std::vector<strategy_fn> strategies;
+            if (parsed_options.count("strategy-list")) {
+                std::vector<strategy_type> strategy_types;
+                for (const auto &strategy_name : parsed_options["strategy-list"].as<std::vector<std::string>>()) {
+                    auto strategy = magic_enum::enum_cast<strategy_type>(strategy_name);
+                    if (!strategy.has_value()) {
+                        std::cerr << "Unknown strategy: " << strategy_name << "\n";
+                        return 1;
+                    }
+                    strategy_types.push_back(strategy.value());
+                }
+                std::ranges::sort(strategy_types);
+                strategy_types.erase(std::ranges::unique(strategy_types).begin(), strategy_types.end());
+                if (strategy_types.front() != strategy_type::basic) {
+                    strategy_types.insert(strategy_types.begin(), strategy_type::basic);
+                }
+                for (const auto &strategy_type : strategy_types) {
+                    strategies.push_back(all_strategies[static_cast<int>(strategy_type)]);
+                }
+            } else {
+                strategies = all_strategies;
+            }
+
             auto [min_difficulty, max_difficulty] = parse_difficulty(parsed_options["difficulty"].as<std::string>());
             fmt::print(std::clog, "Generating {} puzzles\n", parsed_options["count"].as<int>());
             fmt::print(std::clog, "Difficulty: {} - {}\n", min_difficulty, max_difficulty);
@@ -84,7 +110,8 @@ int main(int argc, char **argv) {
                 .max_difficulty = max_difficulty,
                 .seed = seed,
                 .num_puzzles = parsed_options["count"].as<int>(),
-                .threads = parsed_options["threads"].as<int>()
+                .threads = parsed_options["threads"].as<int>(),
+                .strategies = strategies,
             });
             auto elapsed = duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now);
             if (parsed_options["format"].as<std::string>() == "json") {

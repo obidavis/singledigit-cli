@@ -17,6 +17,7 @@ struct generation_options {
     unsigned int seed;
     int num_puzzles;
     int threads;
+    std::vector<strategy_fn> strategies;
 };
 
 struct generation_result {
@@ -41,13 +42,13 @@ private:
 };
 
 inline auto generate(const generation_options &options) {
-    auto generate_task = [min = options.min_difficulty, max = options.max_difficulty](thread_safe_seed_generator &gen, unsigned int count) {
+    auto generate_task = [min = options.min_difficulty, max = options.max_difficulty](thread_safe_seed_generator &gen, unsigned int count, const std::vector<strategy_fn> &strategies) {
         std::vector<generation_result> results;
         while (results.size() < count) {
             puzzle_generator generator(gen());
             std::string solution = generator.generate_solution();
             std::string puzzle = generator.generate_puzzle(solution);
-            std::vector solve_path = solve(board{puzzle}, all_strategies);
+            std::vector solve_path = solve(board{puzzle}, strategies);
             auto breakdown = grade(solve_path);
             float difficulty = breakdown.grade();
             if (difficulty >= min && difficulty <= max) {
@@ -68,11 +69,11 @@ inline auto generate(const generation_options &options) {
     unsigned int puzzles_per_thread = options.num_puzzles / options.threads;
     futures.reserve(options.threads);
     for (int i = 0; i < options.threads; ++i) {
-        futures.push_back(std::async(std::launch::async, generate_task, std::ref(gen), puzzles_per_thread));
+        futures.push_back(std::async(std::launch::async, generate_task, std::ref(gen), puzzles_per_thread, std::cref(options.strategies)));
     }
     if (options.num_puzzles % options.threads != 0) {
         puzzles_per_thread = options.num_puzzles % options.threads;
-        futures.push_back(std::async(std::launch::async, generate_task, std::ref(gen), puzzles_per_thread));
+        futures.push_back(std::async(std::launch::async, generate_task, std::ref(gen), puzzles_per_thread, std::cref(options.strategies)));
     }
     std::vector<generation_result> results;
     for (auto &f : futures) {
