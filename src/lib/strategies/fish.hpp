@@ -5,6 +5,8 @@
 #ifndef FISH_HPP
 #define FISH_HPP
 
+#include <memory>
+#include <vector>
 #include "base_elimination.hpp"
 
 template <size_t N>
