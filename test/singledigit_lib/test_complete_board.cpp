@@ -7,15 +7,19 @@
 #include "board/board.hpp"
 
 TEST(TestCompleteBoard, Valid) {
-    auto board_str = generate_complete_board(0);
+    puzzle_generator generator(0);
+    auto board_str = generator.generate_solution();
     ASSERT_TRUE(board{board_str}.is_valid());
 }
 
 TEST(TestCompleteBoard, Unique) {
-    auto board1 = generate_complete_board(0);
-    auto board2 = generate_complete_board(0);
-    ASSERT_EQ(board1, board2);
+    puzzle_generator generator0(0);
+    auto board0 = generator0.generate_solution();
+    puzzle_generator generator1(0);
+    auto board1 = generator1.generate_solution();
+    ASSERT_EQ(board0, board1);
 
-    auto board3 = generate_complete_board(1);
-    ASSERT_NE(board1, board3);
+    puzzle_generator generator2(1);
+    auto board2 = generator2.generate_solution();
+    ASSERT_NE(board1, board2);
 }

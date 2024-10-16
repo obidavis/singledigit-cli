@@ -14,13 +14,13 @@ TEST(ValueSetTest, ConstructorWithInitializerList) {
 // Test for the value_set to_string method
 TEST(ValueSetTest, ToString) {
     value_set vs({1, 3, 5});
-    EXPECT_EQ(vs.to_string(), "{1, 3, 5}");  // Adjust based on your implementation
+    EXPECT_EQ(vs.to_string(), "1/3/5");  // Adjust based on your implementation
 
     value_set vs2({1, 2, 3, 4, 5, 6, 7, 8, 9});
-    EXPECT_EQ(vs2.to_string(), "{1, 2, 3, 4, 5, 6, 7, 8, 9}");
+    EXPECT_EQ(vs2.to_string(), "1/2/3/4/5/6/7/8/9");
 
     value_set vs3{};
-    EXPECT_EQ(vs3.to_string(), "{}");
+    EXPECT_EQ(vs3.to_string(), "");
 }
 
 // Test for the combinations free function

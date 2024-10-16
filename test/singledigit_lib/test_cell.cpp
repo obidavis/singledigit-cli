@@ -19,7 +19,7 @@ TEST(CellTest, ConstructorWithValue) {
     cell c(A1, 5);
     EXPECT_TRUE(c.is_solved());
     EXPECT_EQ(c.value(), 5);
-    EXPECT_DEBUG_DEATH((void)c.candidates(), "");
+    EXPECT_EQ(c.candidates(), value_set::none());
 }
 
 // Test for constructor with value_set as candidates
@@ -62,10 +62,10 @@ TEST(CellTest, IsSolved) {
 TEST(CellTest, Candidates) {
     value_set vs({2, 4, 6});
     cell c(A1, vs);
-    EXPECT_EQ(c.candidates().to_string(), "{2, 4, 6}");
+    EXPECT_EQ(c.candidates(), (value_set{2, 4, 6}));
 
     c.solve(3);
-    EXPECT_DEBUG_DEATH((void)c.candidates(), "");
+    EXPECT_EQ(c.candidates(), value_set::none());
 }
 
 // Test for value method

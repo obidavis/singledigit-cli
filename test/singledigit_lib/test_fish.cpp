@@ -19,5 +19,4 @@ TEST(Fish, Swordfish) {
     ASSERT_EQ(eliminations.size(), 1);
     auto swordfish_elim = dynamic_cast<fish_elimination<3> *>(eliminations[0].get());
     ASSERT_NE(swordfish_elim, nullptr);
-
 }
