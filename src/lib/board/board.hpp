@@ -2,6 +2,7 @@
 #define BOARD_HPP
 
 #include <string_view>
+#include <span>
 #include <string>
 #include <vector>
 #include <bitset>
