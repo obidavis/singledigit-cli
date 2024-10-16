@@ -16,7 +16,7 @@
 
 void setup_solve(CLI::App &app) {
     auto opt = std::make_shared<solve_options>();
-    auto solve = app.add_subcommand("solve", "Solve a sudoku board");
+    auto solve = app.add_subcommand("solve", "Calculate a detailed solution path for a given board");
 
     solve->add_option("board", opt->board, "The board to solve")
         ->option_text(" ")
