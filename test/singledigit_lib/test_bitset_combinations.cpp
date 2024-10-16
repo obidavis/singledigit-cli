@@ -17,48 +17,6 @@ unsigned long long choose(unsigned long long n, unsigned long long k) {
     return result;
 }
 
-// Test for next_bit_permutation function
-TEST(BitPermutationTest, BasicPermutation) {
-    // Test known bit patterns
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b0011), 0b0101);
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b0101), 0b0110);
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b0110), 0b1001);
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b1001), 0b1010);
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b1010), 0b1100);
-}
-
-TEST(BitPermutationTest, EdgeCaseZero) {
-    // Edge case: next permutation of 0 should still be 0
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0), 0);
-}
-
-// Test for next_bit_permutation function with all unsigned integer sizes
-TEST(BitPermutationTest, WorksWithAllSizes) {
-    // Test with uint8_t
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b0011), 0b0101);
-    EXPECT_EQ(next_bit_permutation<uint8_t>(0b1010), 0b1100);
-
-    // Test with uint16_t
-    EXPECT_EQ(next_bit_permutation<uint16_t>(0b00001111), 0b00010111);
-    EXPECT_EQ(next_bit_permutation<uint16_t>(0b00110011), 0b00110101);
-
-    // Test with uint32_t
-    EXPECT_EQ(next_bit_permutation<uint32_t>(0b00000000000000000000000000001111), 0b00000000000000000000000000010111);
-    EXPECT_EQ(next_bit_permutation<uint32_t>(0b00000000000000000000000000011011), 0b00000000000000000000000000011101);
-
-    // Test with uint64_t
-    EXPECT_EQ(next_bit_permutation<uint64_t>(0x000000000000000F), 0x0000000000000017);
-    EXPECT_EQ(next_bit_permutation<uint64_t>(0x0000000000000F0F), 0x0000000000000F17);
-
-    // Test with __uint128_t
-    EXPECT_EQ(next_bit_permutation<__uint128_t>(0b0111), 0b1011);
-    EXPECT_EQ(next_bit_permutation<__uint128_t>(0b1011), 0b1101);
-
-    __uint128_t v = (__uint128_t)1 << 127 | (__uint128_t)1 << 65 | (__uint128_t)1 << 64 | (__uint128_t)1 << 63 | (__uint128_t)1 << 1;
-    __uint128_t expected = (__uint128_t)1 << 127 | (__uint128_t)1 << 65 | (__uint128_t)1 << 64 | (__uint128_t)1 << 63 | (__uint128_t)1 << 2;
-    EXPECT_EQ(next_bit_permutation<__uint128_t>(v), expected);
-}
-
 // Test for bitset_combinations_view class
 TEST(BitsetCombinationsViewTest, BasicCombination) {
     std::bitset<4> bs("1101"); // bitset with 3 active bits

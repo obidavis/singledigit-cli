@@ -5,39 +5,9 @@
 #ifndef COMBINATIONS_HPP
 #define COMBINATIONS_HPP
 
-#include <bit>
-
-// http://graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
-template<std::unsigned_integral T>
-static constexpr T next_bit_permutation(T v) {
-    T t = v | (v - 1);
-    return (t + 1) | (((~t & -~t) - 1) >> (std::countr_zero(v) + 1));
-}
-
-template <size_t N>
-struct uintN {
-    static consteval auto get_type() {
-        if constexpr (N <= 8) {
-            return uint8_t{};
-        } else if constexpr (N <= 16) {
-            return uint16_t{};
-        } else if constexpr (N <= 32) {
-            return uint32_t{};
-        } else if constexpr (N <= 64) {
-            return uint64_t{};
-        } else {
-            using uint128_t = unsigned __int128;
-            return uint128_t{};
-        }
-    }
-    using type = decltype(get_type());
-};
-
-template <size_t N>
-using uintN_t = typename uintN<N>::type;
-
-template <size_t N>
-static constexpr auto one = uintN_t<N>{1};
+#include <vector>
+#include <algorithm>
+#include <bitset>
 
 template <size_t N>
 struct bitset_combinations_view {
@@ -57,35 +27,31 @@ struct bitset_combinations_view {
         using iterator_category = std::forward_iterator_tag;
 
         iterator() = default;
-        iterator(std::bitset<N> bs, int n, bool end) : k(bs.count()) {
-
+        iterator(std::bitset<N> bs, int n, bool end) : k(bs.count()), bits(k), done(end) {
             for (size_t i = 0, j = 0; i < N; i++) {
                 if (bs.test(i)) {
                     bit_indices[j++] = i;
                 }
             }
-            if (end) {
-                // past-the-end combination
-                // kth bit = 1; lowest n-1 bits = 1
-                bit_pattern = (one<N> << k) | ((one<N> << (n - 1)) - 1);
+            if (n < k) {
+                if (end) {
+                    std::fill_n(bits.rbegin(), n, true);
+                } else {
+                    std::fill_n(bits.begin(), n, true);
+                }
             } else {
-                // first combination
-                // lowest n bits = 1
-                bit_pattern = (one<N> << n) - 1;
+                done = true;
             }
-
-            // if no bits set, all iterators == 0
-            bit_pattern *= (k > 0);
         }
 
         bool operator==(const iterator &rhs) const {
-            return bit_pattern == rhs.bit_pattern;
+            return done;
         }
         bool operator!=(const iterator &rhs) const {
-            return bit_pattern != rhs.bit_pattern;
+            return !done;
         }
         iterator& operator++() {
-            bit_pattern = next_bit_permutation(bit_pattern);
+            done = !std::prev_permutation(bits.begin(), bits.end());
             return *this;
         }
 
@@ -98,14 +64,15 @@ struct bitset_combinations_view {
         std::bitset<N> operator*() const {
             std::bitset<N> result{};
             for (size_t i = 0; i < k; ++i) {
-                result.set(bit_indices[i], bit_pattern & (one<N> << i));
+                result.set(bit_indices[i], bits[i]);
             }
             return result;
         }
 
         size_t k{};
-        uintN_t<N> bit_pattern;
+        std::vector<bool> bits;
         uint8_t bit_indices[N]{};
+        bool done;
     };
 
     iterator begin() {
