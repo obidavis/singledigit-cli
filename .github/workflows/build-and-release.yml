@@ -16,19 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python (if needed)
-        if: matrix.os == 'windows-latest'
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-
       - name: Set up dependencies
         run: |
           if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            sudo apt-get update && sudo apt-get install -y build-essential
+            sudo apt-get update && sudo apt-get install -y build-essential cmake
           elif [ "${{ matrix.os }}" == "macos-latest" ]; then
             brew install cmake
           elif [ "${{ matrix.os }}" == "windows-latest" ]; then
@@ -36,6 +27,9 @@ jobs:
           fi
 
       - name: Configure project
+        env:
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_CXX_COMPILER: g++-12
         run: cmake -S . -B build
 
       - name: Build project
