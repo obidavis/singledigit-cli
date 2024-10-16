@@ -1,5 +1,4 @@
 add_executable(singledigit main.cpp
-        output.cpp
         generate.cpp
         solve.cpp
         format.cpp
