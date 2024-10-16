@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <bitset>
+#include <stdexcept>
 
 template <size_t N>
 struct bitset_combinations_view {
