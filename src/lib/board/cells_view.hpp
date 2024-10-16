@@ -6,6 +6,7 @@
 #define CELLS_VIEW_HPP
 
 #include "cell_set.hpp"
+#include <bit>
 
 template <typename CellType>
 struct cells_view {
@@ -18,16 +19,21 @@ struct cells_view {
         using pointer = CellType *;
         using reference = CellType &;
 
-        iterator() : cells{}, mask{} {}
-        iterator(CellType *cells, const cell_set &mask) : cells(cells), mask(std::bit_cast<__uint128_t>(mask)) {}
+        iterator() : cells{}, mask(81) {}
+        iterator(CellType *cells, const cell_set &cs) : cells(cells), mask(81) {
+            for (int i = 0; i < 81; i++) {
+                this->mask[i] = cs.at(i);
+            }
+            index = std::find(mask.begin(), mask.end(), true) - mask.begin();
+        }
 
         CellType &operator*() const {
-            int index = std::countr_zero(mask);
             return cells[index];
         }
 
         iterator &operator++() {
-            mask &= mask - __uint128_t{1ull};
+            mask[index] = false;
+            index = std::find(mask.begin() + index + 1, mask.end(), true) - mask.begin();
             return *this;
         }
 
@@ -46,7 +52,8 @@ struct cells_view {
         }
 
         CellType *cells;
-        __uint128_t mask;
+        std::vector<bool> mask;
+        int index;
     };
 
     iterator begin() {

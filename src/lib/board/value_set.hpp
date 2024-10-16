@@ -4,6 +4,7 @@
 #include <bitset>
 #include <ranges>
 
+#include <bit>
 #include "detail/bitset_combinations.hpp"
 
 struct value_set {
