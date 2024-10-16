@@ -4,7 +4,6 @@
 
 #include "generate.hpp"
 #include "solve.hpp"
-#include "output.hpp"
 #include "CLI/App.hpp"
 
 int main(int argc, char **argv) {
