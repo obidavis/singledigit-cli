@@ -120,6 +120,15 @@ std::string fish_elimination<3>::name() const {
     return "Swordfish";
 }
 
+template<size_t N>
+strategy_type fish_elimination<N>::type() const {
+    if constexpr (N == 2) {
+        return strategy_type::x_wing;
+    } else if constexpr (N == 3) {
+        return strategy_type::swordfish;
+    }
+}
+
 
 
 

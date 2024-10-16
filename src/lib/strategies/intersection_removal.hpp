@@ -17,6 +17,7 @@ struct intersection_removal_elimination : base_elimination {
     std::pair<constraint_set, constraint_set> c_sets;
     [[nodiscard]] std::string to_string() const override;
     [[nodiscard]] std::string name() const override { return "Intersection Removal"; }
+    [[nodiscard]] strategy_type type() const override { return strategy_type::pointing_pairs_triples; }
 };
 
 std::vector<std::unique_ptr<base_elimination>> pointing_pairs_triples(const board &bd);

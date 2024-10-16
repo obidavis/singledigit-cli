@@ -8,6 +8,7 @@
 #include <random>
 #include <string>
 
+
 class puzzle_generator {
 public:
     explicit puzzle_generator(unsigned int seed) : gen(seed) {}

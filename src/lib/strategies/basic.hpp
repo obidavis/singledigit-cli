@@ -18,6 +18,7 @@ struct basic_elimination : base_elimination {
     cell_index set_cell;
     [[nodiscard]] std::string to_string() const override;
     [[nodiscard]] std::string name() const override { return "Basic"; }
+    [[nodiscard]] strategy_type type() const override { return strategy_type::basic; }
 };
 
 std::vector<std::unique_ptr<base_elimination>> basic(const board &bd);

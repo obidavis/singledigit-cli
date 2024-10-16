@@ -14,6 +14,7 @@ struct fish_elimination : base_elimination {
 
     [[nodiscard]] std::string to_string() const override;
     [[nodiscard]] std::string name() const override;
+    [[nodiscard]] strategy_type type() const override;
     std::array<cell_set, N> sets;
 };
 

@@ -19,6 +19,7 @@ struct cell_combination_elimination : base_elimination {
     constraint_set c_set;
     [[nodiscard]] std::string to_string() const override;
     [[nodiscard]] std::string name() const override;
+    [[nodiscard]] strategy_type type() const override;
 };
 
 std::vector<std::unique_ptr<base_elimination>> naked_singles(const board &bd);

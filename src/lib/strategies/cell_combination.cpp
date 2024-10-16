@@ -86,6 +86,18 @@ std::string cell_combination_elimination<N>::name() const {
     }
 }
 
+template <size_t N>
+strategy_type cell_combination_elimination<N>::type() const {
+    if constexpr (N == 1) {
+        return strategy_type::naked_singles;
+    } else if constexpr (N == 2) {
+        return strategy_type::naked_pairs;
+    } else if constexpr (N == 3) {
+        return strategy_type::naked_triples;
+    } else if constexpr (N == 4) {
+        return strategy_type::naked_quads;
+    }
+}
 
 template struct cell_combination_elimination<1>;
 template struct cell_combination_elimination<2>;

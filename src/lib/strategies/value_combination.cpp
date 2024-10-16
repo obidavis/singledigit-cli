@@ -84,6 +84,19 @@ std::string value_combination_elimination<N>::name() const {
     }
 }
 
+template<size_t N>
+strategy_type value_combination_elimination<N>::type() const {
+    if constexpr (N == 1) {
+        return strategy_type::hidden_singles;
+    } else if constexpr (N == 2) {
+        return strategy_type::hidden_pairs;
+    } else if constexpr (N == 3) {
+        return strategy_type::hidden_triples;
+    } else if constexpr (N == 4) {
+        return strategy_type::hidden_quads;
+    }
+}
+
 template struct value_combination_elimination<1>;
 template struct value_combination_elimination<2>;
 template struct value_combination_elimination<3>;

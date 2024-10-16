@@ -9,6 +9,38 @@
 #include "../board/cell_set.hpp"
 #include "../board/value_set.hpp"
 
+enum class strategy_type : size_t {
+    basic = 0,
+    naked_singles,
+    hidden_singles,
+    naked_pairs,
+    naked_triples,
+    hidden_pairs,
+    hidden_triples,
+    naked_quads,
+    hidden_quads,
+    pointing_pairs_triples,
+    box_line_reduction,
+    x_wing,
+    swordfish,
+};
+
+inline const std::vector all_strategy_types = {
+    strategy_type::basic,
+    strategy_type::naked_singles,
+    strategy_type::hidden_singles,
+    strategy_type::naked_pairs,
+    strategy_type::naked_triples,
+    strategy_type::hidden_pairs,
+    strategy_type::hidden_triples,
+    strategy_type::naked_quads,
+    strategy_type::hidden_quads,
+    strategy_type::pointing_pairs_triples,
+    strategy_type::box_line_reduction,
+    strategy_type::x_wing,
+    strategy_type::swordfish,
+};
+
 struct base_elimination {
     base_elimination(cell_set eliminated_cells, value_set eliminated_values)
         : eliminated_cells(eliminated_cells), eliminated_values(eliminated_values) {}
@@ -23,6 +55,7 @@ struct base_elimination {
     }
     [[nodiscard]] virtual std::string to_string() const = 0;
     [[nodiscard]] virtual std::string name() const = 0;
+    [[nodiscard]] virtual strategy_type type() const = 0;
     virtual ~base_elimination() = default;
 };
 
