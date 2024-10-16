@@ -26,7 +26,7 @@ struct uintN {
         } else if constexpr (N <= 64) {
             return uint64_t{};
         } else {
-            return __uint128_t{};
+            return unsigned __int128{};
         }
     }
     using type = decltype(get_type());
