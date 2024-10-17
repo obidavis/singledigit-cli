@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: singledigit-${{ matrix.os }}-${{ matrix.build_type }}
-          path: ${{ steps.strings.outputs.build-output-dir }}/install/*
+          path: ${{ github.workspace }}/install/bin/*
 
   release:
     needs: build
