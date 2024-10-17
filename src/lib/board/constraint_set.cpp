@@ -1,4 +1,5 @@
 #include "constraint_set.hpp"
+#include "fmt/core.h"
 
 static constexpr std::bitset<81> row_mask(int row) {
     std::bitset<81> mask;
@@ -33,7 +34,7 @@ static constexpr std::bitset<81> constraint_mask(constraint_set_type type, int i
         case constraint_set_type::box:
             return box_mask(index);
         default:
-            __builtin_unreachable();
+            return {};
     }
 }
 
@@ -44,12 +45,12 @@ constraint_set::constraint_set(constraint_set_type type, int index)
 std::string constraint_set::to_string() const {
     switch (type) {
         case constraint_set_type::row:
-            return "Row " + std::string{static_cast<char>('A' + index)};
+            return fmt::format("Row {}", 'A' + index);
         case constraint_set_type::column:
-            return "Col " + std::to_string(index + 1);
+            return fmt::format("Column {}", index + 1);
         case constraint_set_type::box:
-            return "Box " + std::to_string(index + 1);
+            return fmt::format("Box {}", index + 1);
         default:
-            __builtin_unreachable();
+            return "Unknown";
     }
 }

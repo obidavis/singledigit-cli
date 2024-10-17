@@ -2,6 +2,7 @@
 #define CONSTRAINT_SET_HPP
 
 #include "cell_set.hpp"
+#include <array>
 
 enum class constraint_set_type {
     row,
