@@ -59,7 +59,7 @@ board::board(std::string_view board_string) {
             n &= ~1;
 
             // If the bit count is 1, it's a single candidate (solved cell)
-            if (__builtin_popcount(n) == 1) {
+            if (std::popcount(n) == 1) {
                 int value = std::bit_width(n) - 1;
                 _cells.emplace_back(cell_index{i}, value);
             } else {
