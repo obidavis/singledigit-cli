@@ -56,7 +56,7 @@ void setup_generate(CLI::App &app) {
         ->option_text(" ")
         ->default_val(std::random_device{}());
 
-    generate->add_option("-t, --threads", opt->threads, "Number of threads")
+    generate->add_option("-j, --threads", opt->threads, "Number of threads")
         ->option_text(" ")
         ->default_val(1)
         ->check(CLI::PositiveNumber);
