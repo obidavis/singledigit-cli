@@ -23,5 +23,6 @@ FetchContent_Declare(magic_enum
 )
 FetchContent_MakeAvailable(magic_enum)
 
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++")
 target_link_libraries(singledigit PRIVATE CLI11::CLI11 singledigit_lib fmt::fmt nlohmann_json::nlohmann_json magic_enum::magic_enum)
+
+install(TARGETS singledigit)

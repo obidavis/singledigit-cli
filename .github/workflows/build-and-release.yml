@@ -76,6 +76,10 @@ jobs:
         # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+      - name: Install
+        # Install the built target to a standard location for all platforms.
+        run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator.
@@ -97,6 +101,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set executable path
+        id: executable_path
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            echo "executable-path=${{ steps.strings.outputs.build-output-dir }}/bin/singldigit.exe" >> "$GITHUB_OUTPUT"
+          else
+            echo "executable-path=${{ steps.strings.outputs.build-output-dir }}/bin/singldigit" >> "$GITHUB_OUTPUT"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -112,6 +125,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/your_artifact.zip
-          asset_name: your_artifact_${{ github.ref }}.zip
+          asset_path: ${{ steps.executable_path.outputs.executable-path }}
+          asset_name: singldigit_${{ github.ref }}
           asset_content_type: application/zip
