@@ -15,8 +15,9 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          path: ./build
-          run-id: ${{ needs.build.id }}
+          name: install.tar.gz
+      - name: Extract Artifact
+        run: tar -xzf install.tar.gz -C ./build
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:

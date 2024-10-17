@@ -88,10 +88,13 @@ jobs:
         # Install the built target to a standard location for all platforms.
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+      - name: Tar files
+        run: tar -czf install.tar.gz -C ${{ github.workspace }}/install .
+
       - name: Upload Artifact
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: singledigit-${{ matrix.os }}-${{ matrix.build_type }}
-          path: ${{ github.workspace }}/install/bin/*
+          path: ${{ github.workspace }}/install.tar.gz
 
