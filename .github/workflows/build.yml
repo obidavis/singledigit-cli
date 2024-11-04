@@ -89,11 +89,11 @@ jobs:
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
       - name: Tar files
-        run: tar -czf install.tar.gz -C ${{ github.workspace }}/install .
+        run: tar -czf install.tar.gz -C ${{ github.workspace }}/install/bin .
 
       - name: Upload Artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: singledigit-${{ matrix.os }}-${{ matrix.build_type }}
           path: ${{ github.workspace }}/install.tar.gz
