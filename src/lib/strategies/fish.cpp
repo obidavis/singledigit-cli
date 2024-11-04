@@ -9,14 +9,17 @@
 #include "board/value_set.hpp"
 
 template <size_t N>
+static cell_set set_union(const std::array<constraint_set, N> &c_sets) {
+    return [&]<size_t ...Is>(std::index_sequence<Is...>) {
+        return (c_sets[Is] | ...);
+    }(std::make_index_sequence<N>());
+}
+
+template <size_t N>
 static void fish_impl(const std::array<constraint_set, N> &constraint_sets1, const std::array<constraint_set, N> &constraint_sets2, const board &bd, std::vector<std::unique_ptr<base_elimination>> &eliminations) {
     cell_set open_cells = bd.open_cells();
-    cell_set cs1 = open_cells & [constraint_sets1]<size_t ...Is>(std::index_sequence<Is...>) {
-        return (constraint_sets1[Is] | ...);
-    }(std::make_index_sequence<N>());
-    cell_set cs2 = open_cells & [constraint_sets2]<size_t ...Is>(std::index_sequence<Is...>) {
-        return (constraint_sets2[Is] | ...);
-    }(std::make_index_sequence<N>());
+    cell_set cs1 = open_cells & set_union(constraint_sets1);
+    cell_set cs2 = open_cells & set_union(constraint_sets2);
 
     cell_set overlap = cs1 & cs2;
     cell_set cs1_without_overlap = cs1 - overlap;
