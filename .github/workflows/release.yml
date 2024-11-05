@@ -79,7 +79,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: singledigit-${{ matrix.os }}-${{ matrix.build_type }}
+          name: singledigit-${{ matrix.os }}
           path: install.tar.gz
 
   release:
@@ -92,9 +92,11 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          name: singledigit-${{ matrix.os }}-${{ matrix.build_type }}
+          pattern: singledigit-*
       - name: Extract Artifact
-        run: tar -xzf install.tar.gz
+        run: | 
+          ls -al
+          tar -xzf install.tar.gz
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
