@@ -87,8 +87,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
@@ -96,11 +94,11 @@ jobs:
       - name: Extract Artifact
         run: | 
           ls -al
-          tar -xzf install.tar.gz
+#          tar -xzf install.tar.gz
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./*
+          files: ./singledigit-*
 permissions:
   contents: write
   actions: read
