@@ -96,10 +96,10 @@ jobs:
           ls -al
 #          tar -xzf install.tar.gz
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1.14.0
         with:
-          files: |
-            ./singledigit-*
+          artifacts: "singledigit-*"
+
 permissions:
   contents: write
   actions: read
